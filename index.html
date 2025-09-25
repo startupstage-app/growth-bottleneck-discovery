@@ -1,0 +1,2890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartupStage Growth Diagnostic</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #8F5AF3;
+            --secondary: #FFA8CB;
+            --dark: #050310;
+            --card-bg: rgba(15, 8, 32, 0.9);
+            --text-light: #F8F6FF;
+            --text-muted: #B8A9D1;
+            --success: #4CAF50;
+            --gradient: linear-gradient(135deg, #8F5AF3, #FFA8CB);
+            --border-color: rgba(143, 90, 243, 0.2);
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(180deg, #050310 0%, #0A0520 50%, #050310 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+        
+        .question-section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 80px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background: rgba(143, 90, 243, 0.2);
+            border-radius: 3px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+        
+        .options-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+        
+        .option-card {
+            background: rgba(26, 15, 53, 0.5);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-light);
+        }
+        
+        .option-card:hover {
+            border-color: var(--primary);
+            background: rgba(143, 90, 243, 0.1);
+        }
+        
+        .option-card.selected {
+            border-color: var(--primary);
+            background: rgba(143, 90, 243, 0.2);
+        }
+        
+        .option-card .icon {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: var(--primary);
+        }
+        
+        .option-card.selected .icon {
+            opacity: 1;
+        }
+        
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            margin-top: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(143, 90, 243, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .results-section {
+            display: none;
+        }
+        
+        .diagnosis-card {
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+        
+        .diagnosis-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .bottleneck-badge {
+            display: inline-block;
+            background: var(--gradient);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+        
+        .symptoms-grid {
+            margin: 40px 0;
+        }
+        
+        .symptom-item {
+            background: rgba(26, 15, 53, 0.5);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .symptom-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .implementation-plan {
+            background: rgba(143, 90, 243, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+        
+        .plan-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .day-task {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .day-number {
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+        
+        .task-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(143, 90, 243, 0.1);
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .task-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+        
+        .loading-screen {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(143, 90, 243, 0.2);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 24px;
+            background: rgba(143, 90, 243, 0.2);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .export-btn:hover {
+            background: rgba(143, 90, 243, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .revenue-impact {
+            background: linear-gradient(135deg, rgba(255, 168, 203, 0.2), rgba(143, 90, 243, 0.2));
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: center;
+            border: 1px solid var(--secondary);
+        }
+        
+        .impact-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            text-decoration: underline;
+            color: var(--secondary);
+        }
+        
+        @media (max-width: 640px) {
+            h1 { font-size: 1.8rem; }
+            .question-section { padding: 20px; }
+            .diagnosis-card { padding: 25px; }
+            
+            /* Stack the time and help sections on mobile */
+            .implementation-plan .plan-header + div {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            
+            .implementation-plan .plan-header + div > div:last-child {
+                margin-top: 20px;
+                width: 100%;
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .header, .question-section, .loading-screen {
+                display: none !important;
+            }
+            
+            .diagnosis-card {
+                background: white !important;
+                border: 2px solid #333 !important;
+                color: black !important;
+            }
+            
+            .bottleneck-badge {
+                background: #333 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .symptom-item {
+                background: #f5f5f5 !important;
+                border-left: 4px solid #333 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .implementation-plan {
+                background: #f9f9f9 !important;
+                page-break-inside: avoid;
+            }
+            
+            .day-task {
+                background: white !important;
+                border: 1px solid #ddd !important;
+                page-break-inside: avoid;
+            }
+            
+            .export-buttons {
+                display: none !important;
+            }
+            
+            /* Hide the help CTA in implementation plan when printing */
+            .implementation-plan > div:last-child {
+                display: none !important;
+            }
+            
+            .task-checkbox {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            h2, h3, .plan-header {
+                color: black !important;
+            }
+            
+            .symptom-title, .day-number {
+                color: #333 !important;
+                font-weight: bold !important;
+            }
+            
+            .revenue-impact {
+                background: #f0f0f0 !important;
+                border: 2px solid #333 !important;
+            }
+            
+            .impact-amount {
+                color: black !important;
+                -webkit-text-fill-color: black !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Find Your #1 Growth Bottleneck</h1>
+            <p class="subtitle">Based on analysis of thousands of startups • Takes 3 minutes</p>
+        </div>
+        
+        <!-- Questions Section -->
+        <div class="question-section">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            
+            <form id="diagnosticForm">
+                <!-- Q1: MRR -->
+                <h3>What's your current monthly recurring revenue?</h3>
+                <div class="options-grid" data-question="mrr">
+                    <div class="option-card" data-value="0">
+                        $0 (Pre-revenue)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="1-10k">
+                        $1-10K (Early Stage)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="10-50k">
+                        $10-50K (Growth Stage)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="50-100k">
+                        $50-100K (Scale Stage)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="100k">
+                        $100K (Scale Stage)
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <!-- Q2: Primary Challenge -->
+                <h3>What's your biggest challenge right now?</h3>
+                <div class="options-grid" data-question="challenge">
+                    <div class="option-card" data-value="acquisition">
+                        Getting new customers
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="retention">
+                        Keeping customers
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="pricing">
+                        Revenue per customer
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="operations">
+                        Too many things to manage
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="research">
+                        Researching what to do next
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <!-- Q3: Growth Trend -->
+                <h3>How has your revenue changed over the last 3 months?</h3>
+                <div class="options-grid" data-question="growth">
+                    <div class="option-card" data-value="declining">
+                        Declining
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="flat">
+                        Flat (zero to 5% growth)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="slow">
+                        Slow growth (5-15%)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="fast">
+                        Fast growth (15%+)
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <!-- Q4: Churn -->
+                <h3>What's your monthly customer churn rate?</h3>
+                <div class="options-grid" data-question="churn">
+                    <div class="option-card" data-value="unknown">
+                        Don't track it
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="low">
+                        Under 5%
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="medium">
+                        5-10%
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="high">
+                        Over 10%
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <!-- Q5: Time in Business -->
+                <h3>How long have you been working on this business?</h3>
+                <div class="options-grid" data-question="time">
+                    <div class="option-card" data-value="new">
+                        Less than 6 months
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="early">
+                        6-12 months
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="established">
+                        1-2 years
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="veteran">
+                        Over 2 years
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <!-- Q6: Sales Process -->
+                <h3>Who handles sales in your company?</h3>
+                <div class="options-grid" data-question="sales">
+                    <div class="option-card" data-value="founder">
+                        Just me (founder)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="team">
+                        Small sales team
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="automated">
+                        Mostly automated
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="none">
+                        No active sales
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <!-- Q7: Time Allocation -->
+                <h3>Where do you spend most of your time?</h3>
+                <div class="options-grid" data-question="time-spent">
+                    <div class="option-card" data-value="product">
+                        Building product
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="sales">
+                        Sales and marketing
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="support">
+                        Customer support
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="admin">
+                        Operations/admin
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <!-- Q8: Business Model -->
+                <h3>What's your business model?</h3>
+                <div class="options-grid" data-question="model">
+                    <div class="option-card" data-value="saas">
+                        SaaS (subscription)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="service">
+                        Service/consulting
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="ecommerce">
+                        E-commerce/marketplace
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="other">
+                        Other
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <!-- Q9: Last Price Increase -->
+                <h3>When did you last raise prices?</h3>
+                <div class="options-grid" data-question="price-change">
+                    <div class="option-card" data-value="never">
+                        Never
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="recent">
+                        Within 6 months
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="old">
+                        6-12 months ago
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="ancient">
+                        Over a year ago
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <!-- Q10: Services/Upsells -->
+                <h3>Do you offer additional services or upsells?</h3>
+                <div class="options-grid" data-question="upsells">
+                    <div class="option-card" data-value="none">
+                        No additional offerings
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="basic">
+                        Some add-ons (under 10% of revenue)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="moderate">
+                        Multiple upsells (10-30% of revenue)
+                        <span class="icon">✓</span>
+                    </div>
+                    <div class="option-card" data-value="strong">
+                        Strong expansion revenue (30%+ of revenue)
+                        <span class="icon">✓</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-primary" id="submitBtn" disabled>
+                    Complete Diagnosis
+                </button>
+            </form>
+        </div>
+        
+        <!-- Loading Screen -->
+        <div class="loading-screen" id="loadingScreen">
+            <div class="spinner"></div>
+            <h2>Analyzing your responses...</h2>
+            <p style="color: var(--text-muted); margin-top: 20px;">Comparing against thousands of startup patterns</p>
+        </div>
+        
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="diagnosis-card">
+                <div class="diagnosis-header">
+                    <div class="bottleneck-badge" id="bottleneckBadge"></div>
+                    <h2 id="bottleneckTitle"></h2>
+                    <p id="bottleneckDescription" style="color: var(--text-muted); margin-top: 15px;"></p>
+                </div>
+                
+                <div class="revenue-impact">
+                    <p style="color: var(--text-muted); margin-bottom: 10px;">Potential Monthly Revenue Impact:</p>
+                    <div class="impact-amount" id="revenueImpact"></div>
+                    <p style="color: var(--text-muted); margin-top: 10px; font-size: 0.9rem;">Based on similar companies at your stage</p>
+                </div>
+                
+                <div class="symptoms-grid" id="symptomsGrid">
+                    <h3 style="margin-bottom: 20px; color: var(--text-light);">Key Issues We Identified:</h3>
+                </div>
+                
+                <div class="implementation-plan">
+                    <div class="plan-header">Your 14-Day Implementation Plan</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px;">
+                        <div>
+                            <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+                                Total time investment:
+                            </p>
+                            <p style="background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.8rem; font-weight: 800; margin: 3px 0; line-height: 1;">
+                                25-30 hours
+                            </p>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 3px 0 0;">
+                                over 14 days
+                            </p>
+                        </div>
+                        <div style="background: rgba(143, 90, 243, 0.08); border: 1px solid rgba(143, 90, 243, 0.3); border-radius: 10px; padding: 14px 24px; text-align: center;">
+                            <p style="color: var(--text-muted); margin: 0; font-size: 0.85rem;">Don't have time?</p>
+                            <p style="color: var(--primary); font-weight: 600; margin: 3px 0; font-size: 0.95rem;">We can help implement this</p>
+                            <a href="https://cal.com/startupstage/get-unstuck-1-on-1-founder-call" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: underline;">
+                                Schedule your included call →
+                            </a>
+                        </div>
+                    </div>
+                    <div id="implementationTasks"></div>
+                    
+                    <div style="background: rgba(143, 90, 243, 0.1); border-radius: 12px; padding: 25px; margin-top: 30px; text-align: center; border: 1px solid var(--primary);">
+                        <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.3rem;">Need Help Implementing This Plan?</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 20px;">
+                            Get expert guidance from founders who've solved these exact problems.
+                        </p>
+                        <a href="https://cal.com/startupstage/get-unstuck-1-on-1-founder-call" class="btn-primary" style="display: inline-block; padding: 12px 30px; font-size: 1rem;">
+                            Schedule Your Included Expert Call
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="export-buttons" style="display: flex; justify-content: center; margin-top: 30px;">
+                    <button class="export-btn" onclick="downloadPlan()" style="padding: 14px 40px; font-size: 1.05rem; font-weight: 600;">
+                        Download Complete Implementation Guide
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        // Store answers
+        let answers = {};
+        let answeredQuestions = new Set();
+        const totalQuestions = 10;
+        
+        // Add click handlers to all option cards
+        document.querySelectorAll('.option-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const grid = this.parentElement;
+                const question = grid.dataset.question;
+                
+                // Remove selected class from siblings
+                grid.querySelectorAll('.option-card').forEach(sibling => {
+                    sibling.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked card
+                this.classList.add('selected');
+                
+                // Store answer
+                answers[question] = this.dataset.value;
+                answeredQuestions.add(question);
+                
+                // Update progress
+                updateProgress();
+                
+                // Check if all questions answered
+                const allGrids = document.querySelectorAll('.options-grid');
+                let allAnswered = true;
+                allGrids.forEach(grid => {
+                    if (!grid.querySelector('.option-card.selected')) {
+                        allAnswered = false;
+                    }
+                });
+                
+                // Enable submit button if all questions answered
+                if (allAnswered) {
+                    document.getElementById('submitBtn').disabled = false;
+                    document.getElementById('submitBtn').style.cursor = 'pointer';
+                }
+            });
+        });
+        
+        function updateProgress() {
+            const percentage = (answeredQuestions.size / totalQuestions) * 100;
+            document.getElementById('progress').style.width = percentage + '%';
+        }
+        
+        // Form submission
+        document.getElementById('diagnosticForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted!', answers);
+            
+            // Hide questions, show loading
+            document.querySelector('.question-section').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'block';
+            
+            // Simulate processing
+            setTimeout(() => {
+                generateDiagnosis();
+            }, 2500);
+        });
+        
+        // Also add click handler directly to button as backup
+        document.getElementById('submitBtn').addEventListener('click', function(e) {
+            if (!this.disabled) {
+                e.preventDefault();
+                console.log('Button clicked!', answers);
+                
+                // Hide questions, show loading
+                document.querySelector('.question-section').style.display = 'none';
+                document.getElementById('loadingScreen').style.display = 'block';
+                
+                // Simulate processing
+                setTimeout(() => {
+                    generateDiagnosis();
+                }, 2500);
+            }
+        });
+        
+        function generateDiagnosis() {
+            // Dynamic scoring system
+            const scores = {
+                pricing: 0,
+                retention: 0,
+                acquisition: 0,
+                operations: 0,
+                pmf: 0
+            };
+            
+            // Primary challenge gives huge weight
+            if (answers.challenge === 'pricing') scores.pricing += 30;
+            if (answers.challenge === 'retention') scores.retention += 30;
+            if (answers.challenge === 'acquisition') scores.acquisition += 30;
+            if (answers.challenge === 'operations') scores.operations += 30;
+            if (answers.challenge === 'research') scores.pricing += 20; // Research usually means pricing issues
+            
+            // Growth signals
+            if (answers.growth === 'flat' || answers.growth === 'declining') {
+                scores.pricing += 15;
+                scores.pmf += 10;
+            }
+            
+            // Churn analysis
+            if (answers.churn === 'high') {
+                scores.retention += 25;
+                scores.pmf += 15;
+            } else if (answers.churn === 'medium') {
+                scores.retention += 15;
+            } else if (answers.churn === 'unknown') {
+                scores.operations += 10;
+            }
+            
+            // Price change history
+            if (answers['price-change'] === 'never' || answers['price-change'] === 'ancient') {
+                scores.pricing += 20;
+            }
+            
+            // Upsells analysis
+            if (answers.upsells === 'none' || answers.upsells === 'basic') {
+                scores.pricing += 10;
+            }
+            
+            // Time in business vs MRR
+            if (answers.time === 'veteran' && (answers.mrr === '0' || answers.mrr === '1-10k')) {
+                scores.pmf += 20;
+                scores.operations += 15;
+            }
+            
+            // Sales process inefficiency
+            if (answers.sales === 'founder' && answers['time-spent'] === 'sales') {
+                scores.acquisition += 15;
+                scores.operations += 10;
+            }
+            
+            // Find highest scoring bottleneck
+            let maxScore = 0;
+            let primaryBottleneck = 'pricing';
+            
+            for (const [key, value] of Object.entries(scores)) {
+                if (value > maxScore) {
+                    maxScore = value;
+                    primaryBottleneck = key;
+                }
+            }
+            
+            // Generate diagnosis based on bottleneck
+            const diagnoses = {
+                pricing: {
+                    badge: 'HIDDEN REVENUE',
+                    title: 'You Have a Hidden Revenue Bottleneck',
+                    description: 'Most founders at your stage are leaving 30-60% of potential revenue on the table through underpricing and missing expansion opportunities.',
+                    symptoms: generatePricingSymptoms(),
+                    plan: generatePricingPlan()
+                },
+                retention: {
+                    badge: 'RETENTION CRISIS',
+                    title: 'You Have a Retention Crisis',
+                    description: 'Your churn rate is destroying growth. Every improvement in retention has compounding effects on revenue.',
+                    symptoms: generateRetentionSymptoms(),
+                    plan: generateRetentionPlan()
+                },
+                acquisition: {
+                    badge: 'ACQUISITION BOTTLENECK',
+                    title: 'You Have an Acquisition Bottleneck',
+                    description: 'Your customer acquisition process is inefficient, making growth expensive and unsustainable.',
+                    symptoms: generateAcquisitionSymptoms(),
+                    plan: generateAcquisitionPlan()
+                },
+                operations: {
+                    badge: 'OPERATIONAL CHAOS',
+                    title: 'You Have Operational Chaos',
+                    description: 'You\'re drowning in tasks instead of focusing on growth. Systems and automation can free up 40% of your time.',
+                    symptoms: generateOperationsSymptoms(),
+                    plan: generateOperationsPlan()
+                },
+                pmf: {
+                    badge: 'PRODUCT-MARKET FIT GAP',
+                    title: 'You Have a Product-Market Fit Gap',
+                    description: 'Your product isn\'t solving a painful enough problem for your target market, making everything else harder.',
+                    symptoms: generatePMFSymptoms(),
+                    plan: generatePMFPlan()
+                }
+            };
+            
+            const diagnosis = diagnoses[primaryBottleneck];
+            
+            // Calculate revenue impact based on MRR
+            const mrrRanges = {
+                '0': [500, 2000],
+                '1-10k': [1000, 5000],
+                '10-50k': [5000, 20000],
+                '50-100k': [15000, 45000],
+                '100k': [25000, 60000]
+            };
+            
+            const [low, high] = mrrRanges[answers.mrr] || [1000, 5000];
+            const impact = `$${(low/1000).toFixed(0)}K - $${(high/1000).toFixed(0)}K`;
+            
+            // Display results
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            document.getElementById('bottleneckBadge').textContent = diagnosis.badge;
+            document.getElementById('bottleneckTitle').textContent = diagnosis.title;
+            document.getElementById('bottleneckDescription').textContent = diagnosis.description;
+            document.getElementById('revenueImpact').textContent = impact;
+            
+            // Display symptoms
+            const symptomsGrid = document.getElementById('symptomsGrid');
+            diagnosis.symptoms.forEach(symptom => {
+                const symptomDiv = document.createElement('div');
+                symptomDiv.className = 'symptom-item';
+                symptomDiv.innerHTML = `
+                    <div class="symptom-title">${symptom.title}</div>
+                    <div>${symptom.description}</div>
+                `;
+                symptomsGrid.appendChild(symptomDiv);
+            });
+            
+            // Display implementation plan
+            const tasksDiv = document.getElementById('implementationTasks');
+            diagnosis.plan.forEach(day => {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'day-task';
+                
+                let tasksHTML = '<ul class="task-list">';
+                day.tasks.forEach(task => {
+                    tasksHTML += `<li><input type="checkbox" class="task-checkbox"> ${task}</li>`;
+                });
+                tasksHTML += '</ul>';
+                
+                dayDiv.innerHTML = `
+                    <div class="day-number">${day.day}</div>
+                    <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">${day.time}</div>
+                    ${tasksHTML}
+                `;
+                tasksDiv.appendChild(dayDiv);
+            });
+        }
+        
+        function generatePricingSymptoms() {
+            const symptoms = [];
+            
+            // Primary symptom based on actual answer
+            if (answers['price-change'] === 'never') {
+                symptoms.push({
+                    title: 'Never Tested Pricing',
+                    description: 'You\'ve never raised prices, guaranteeing you\'re undervalued. Most founders can increase 20-40% without losing customers.'
+                });
+            } else if (answers['price-change'] === 'ancient') {
+                symptoms.push({
+                    title: 'Stale Pricing Strategy',
+                    description: 'Your pricing is over a year old. Markets change, value increases, but your prices haven\'t kept pace.'
+                });
+            }
+            
+            // Secondary symptom based on upsells answer
+            if (answers.upsells === 'none') {
+                symptoms.push({
+                    title: 'No Expansion Revenue',
+                    description: 'You have zero upsell opportunities. Successful SaaS companies generate 30%+ from existing customers.'
+                });
+            } else if (answers.upsells === 'basic') {
+                symptoms.push({
+                    title: 'Weak Expansion Revenue',
+                    description: 'Your upsells generate less than 10% of revenue. There\'s significant room for growth here.'
+                });
+            }
+            
+            // Growth-based symptom
+            if (answers.growth === 'flat' || answers.growth === 'declining') {
+                symptoms.push({
+                    title: 'Revenue Plateau',
+                    description: 'Your flat/declining growth often indicates pricing that doesn\'t capture value delivered.'
+                });
+            }
+            
+            // If we need more symptoms, add general ones
+            while (symptoms.length < 3) {
+                const generalSymptoms = [
+                    {
+                        title: 'Likely Underpriced vs Market',
+                        description: 'Without regular pricing tests, you\'re probably 30-50% below market rates.'
+                    },
+                    {
+                        title: 'Missing Annual Plan Revenue',
+                        description: 'Annual plans with 2 months free can improve cash flow by 40%.'
+                    },
+                    {
+                        title: 'No Premium Tier',
+                        description: 'Without premium options, you\'re missing high-value customers willing to pay more.'
+                    }
+                ];
+                symptoms.push(generalSymptoms[symptoms.length]);
+            }
+            
+            return symptoms.slice(0, 3);
+        }
+        
+        function generateRetentionSymptoms() {
+            const symptoms = [];
+            
+            // Primary based on churn
+            if (answers.churn === 'high') {
+                symptoms.push({
+                    title: 'Critical Churn Rate (>10%)',
+                    description: 'You\'re losing customers faster than sustainable. This is your #1 priority to fix.'
+                });
+            } else if (answers.churn === 'medium') {
+                symptoms.push({
+                    title: 'Elevated Churn Rate (5-10%)',
+                    description: 'Your churn is above healthy levels. Each 1% improvement has compounding effects.'
+                });
+            } else if (answers.churn === 'unknown') {
+                symptoms.push({
+                    title: 'Untracked Churn',
+                    description: 'You can\'t fix what you don\'t measure. Setting up tracking is step one.'
+                });
+            }
+            
+            // Challenge-based
+            if (answers.challenge === 'retention') {
+                symptoms.push({
+                    title: 'Customer Success Gaps',
+                    description: 'Your onboarding or ongoing support isn\'t helping customers achieve their goals.'
+                });
+            }
+            
+            // Time spent
+            if (answers['time-spent'] === 'support') {
+                symptoms.push({
+                    title: 'Support Overwhelm',
+                    description: 'Spending most time on support indicates product or onboarding issues.'
+                });
+            }
+            
+            // Fill with general if needed
+            const generalSymptoms = [
+                {
+                    title: 'Weak Activation',
+                    description: 'Customers aren\'t reaching their "aha moment" quickly enough.'
+                },
+                {
+                    title: 'Poor Product-Market Fit',
+                    description: 'High churn often signals misalignment with customer needs.'
+                },
+                {
+                    title: 'Missing Engagement Loops',
+                    description: 'Your product lacks features that bring users back regularly.'
+                }
+            ];
+            
+            while (symptoms.length < 3) {
+                symptoms.push(generalSymptoms[symptoms.length]);
+            }
+            
+            return symptoms.slice(0, 3);
+        }
+        
+        function generateAcquisitionSymptoms() {
+            const symptoms = [];
+            
+            // Sales process based
+            if (answers.sales === 'founder') {
+                symptoms.push({
+                    title: 'Founder Bottleneck',
+                    description: 'Everything depends on you. This doesn\'t scale and burns you out.'
+                });
+            } else if (answers.sales === 'none') {
+                symptoms.push({
+                    title: 'No Active Sales',
+                    description: 'Hoping customers find you isn\'t a strategy. You need systematic outreach.'
+                });
+            }
+            
+            // Challenge based
+            if (answers.challenge === 'acquisition') {
+                symptoms.push({
+                    title: 'Weak Lead Generation',
+                    description: 'Your current channels aren\'t delivering qualified prospects consistently.'
+                });
+            }
+            
+            // Time based
+            if (answers['time-spent'] === 'sales' && answers.growth !== 'fast') {
+                symptoms.push({
+                    title: 'Sales Efficiency Problem',
+                    description: 'You\'re spending time selling but not seeing results. Process needs optimization.'
+                });
+            }
+            
+            // General symptoms
+            const generalSymptoms = [
+                {
+                    title: 'No Scalable Channel',
+                    description: 'You haven\'t found a repeatable way to acquire customers profitably.'
+                },
+                {
+                    title: 'Poor Conversion Rates',
+                    description: 'Leads aren\'t converting, indicating messaging or qualification issues.'
+                },
+                {
+                    title: 'High CAC',
+                    description: 'Customer acquisition costs are too high relative to lifetime value.'
+                }
+            ];
+            
+            while (symptoms.length < 3) {
+                symptoms.push(generalSymptoms[symptoms.length]);
+            }
+            
+            return symptoms.slice(0, 3);
+        }
+        
+        function generateOperationsSymptoms() {
+            const symptoms = [];
+            
+            if (answers.challenge === 'operations') {
+                symptoms.push({
+                    title: 'Task Overwhelm',
+                    description: 'Too many things need your attention. You need systems and delegation.'
+                });
+            }
+            
+            if (answers['time-spent'] === 'admin') {
+                symptoms.push({
+                    title: 'Admin Time Sink',
+                    description: 'Operations are stealing time from growth activities.'
+                });
+            }
+            
+            if (answers.time === 'veteran' && (answers.mrr === '0' || answers.mrr === '1-10k')) {
+                symptoms.push({
+                    title: 'Execution Problems',
+                    description: 'After 2+ years with low revenue, systems and focus are the issue.'
+                });
+            }
+            
+            const generalSymptoms = [
+                {
+                    title: 'No Standard Processes',
+                    description: 'Everything is ad-hoc, causing inconsistency and inefficiency.'
+                },
+                {
+                    title: 'Tool Chaos',
+                    description: 'Using too many tools or the wrong ones for your stage.'
+                },
+                {
+                    title: 'Lack of Automation',
+                    description: 'Manual tasks that could be automated are eating your time.'
+                }
+            ];
+            
+            while (symptoms.length < 3) {
+                symptoms.push(generalSymptoms[symptoms.length]);
+            }
+            
+            return symptoms.slice(0, 3);
+        }
+        
+        function generatePMFSymptoms() {
+            const symptoms = [];
+            
+            if (answers.growth === 'declining') {
+                symptoms.push({
+                    title: 'Declining Revenue',
+                    description: 'Loss of revenue indicates fundamental product-market misalignment.'
+                });
+            }
+            
+            if (answers.churn === 'high') {
+                symptoms.push({
+                    title: 'Customers Don\'t Stick',
+                    description: 'High churn means your product isn\'t solving a critical problem.'
+                });
+            }
+            
+            if (answers.time === 'veteran' && answers.mrr === '0') {
+                symptoms.push({
+                    title: 'No Revenue After 2+ Years',
+                    description: 'This timeline suggests fundamental market or product issues.'
+                });
+            }
+            
+            const generalSymptoms = [
+                {
+                    title: 'Weak Value Proposition',
+                    description: 'Customers don\'t clearly understand or need what you offer.'
+                },
+                {
+                    title: 'Wrong Target Market',
+                    description: 'You\'re selling to people who don\'t desperately need your solution.'
+                },
+                {
+                    title: 'Feature Bloat',
+                    description: 'Building features hoping something sticks instead of solving one problem well.'
+                }
+            ];
+            
+            while (symptoms.length < 3) {
+                symptoms.push(generalSymptoms[symptoms.length]);
+            }
+            
+            return symptoms.slice(0, 3);
+        }
+        
+        // Implementation plans (simplified versions for each bottleneck)
+        function generatePricingPlan() {
+            return [
+                {
+                    day: 'Days 1-3: Price Discovery',
+                    time: '6 hours total',
+                    tasks: [
+                        'Call 5 customers: "What value do you get from our product?"',
+                        'Research 3 competitors\' pricing pages',
+                        'Calculate your true cost per customer',
+                        'Document which features customers actually use'
+                    ]
+                },
+                {
+                    day: 'Days 4-7: Test & Implement',
+                    time: '8 hours total',
+                    tasks: [
+                        'Raise prices 20% for NEW customers only',
+                        'Create one premium tier with 2x pricing',
+                        'Design a services package ($2-5K one-time)',
+                        'Update website with new pricing'
+                    ]
+                },
+                {
+                    day: 'Days 8-14: Expand Revenue',
+                    time: '10 hours total',
+                    tasks: [
+                        'Launch annual plans (2 months free)',
+                        'Email top 20% of customers about premium tier',
+                        'Track acceptance rates daily',
+                        'Plan next price increase if >80% accept'
+                    ]
+                }
+            ];
+        }
+        
+        function generateRetentionPlan() {
+            return [
+                {
+                    day: 'Days 1-3: Diagnose Churn',
+                    time: '8 hours total',
+                    tasks: [
+                        'Export list of churned customers from last 60 days',
+                        'Email 10 churned users for 15-min calls',
+                        'Analyze usage data before churn',
+                        'Identify top 3 churn triggers'
+                    ]
+                },
+                {
+                    day: 'Days 4-7: Fix Onboarding',
+                    time: '10 hours total',
+                    tasks: [
+                        'Map your current onboarding flow',
+                        'Identify where users get stuck',
+                        'Create 3 onboarding emails for new users',
+                        'Add progress bar to setup process'
+                    ]
+                },
+                {
+                    day: 'Days 8-14: Engagement Systems',
+                    time: '8 hours total',
+                    tasks: [
+                        'Set up weekly check-in emails',
+                        'Create re-engagement campaign for dormant users',
+                        'Launch "office hours" for struggling customers',
+                        'Implement usage-based upgrade prompts'
+                    ]
+                }
+            ];
+        }
+        
+        function generateAcquisitionPlan() {
+            return [
+                {
+                    day: 'Days 1-3: Channel Analysis',
+                    time: '6 hours total',
+                    tasks: [
+                        'List all current traffic sources',
+                        'Calculate CAC for each channel',
+                        'Identify your #1 performing channel',
+                        'Document your sales process end-to-end'
+                    ]
+                },
+                {
+                    day: 'Days 4-7: Optimize Best Channel',
+                    time: '10 hours total',
+                    tasks: [
+                        'Double down on best channel',
+                        'A/B test 3 new headlines/messages',
+                        'Improve landing page conversion',
+                        'Set up proper conversion tracking'
+                    ]
+                },
+                {
+                    day: 'Days 8-14: Scale What Works',
+                    time: '12 hours total',
+                    tasks: [
+                        'Increase budget on winning channel by 50%',
+                        'Create 5 pieces of content for that channel',
+                        'Test one new similar channel',
+                        'Document playbook for repeatable execution'
+                    ]
+                }
+            ];
+        }
+        
+        function generateOperationsPlan() {
+            return [
+                {
+                    day: 'Days 1-3: Time Audit',
+                    time: '4 hours total',
+                    tasks: [
+                        'Track every task for 3 days',
+                        'Identify top 5 time wasters',
+                        'List all tools you\'re currently using',
+                        'Find 3 tasks you can eliminate immediately'
+                    ]
+                },
+                {
+                    day: 'Days 4-7: Automate Basics',
+                    time: '8 hours total',
+                    tasks: [
+                        'Set up email templates for common responses',
+                        'Automate invoice and payment collection',
+                        'Create SOPs for repetitive tasks',
+                        'Implement basic Zapier workflows'
+                    ]
+                },
+                {
+                    day: 'Days 8-14: Systems & Delegation',
+                    time: '10 hours total',
+                    tasks: [
+                        'Hire VA for 5 hours/week ($15-25/hour)',
+                        'Document your core processes',
+                        'Set up project management system',
+                        'Create weekly dashboard for key metrics'
+                    ]
+                }
+            ];
+        }
+        
+        function generatePMFPlan() {
+            return [
+                {
+                    day: 'Days 1-3: Customer Discovery',
+                    time: '10 hours total',
+                    tasks: [
+                        'Interview 10 customers about their #1 problem',
+                        'Ask: "How disappointed would you be if we disappeared?"',
+                        'Document exact words customers use',
+                        'Identify patterns in feedback'
+                    ]
+                },
+                {
+                    day: 'Days 4-7: Pivot or Persevere',
+                    time: '8 hours total',
+                    tasks: [
+                        'Decide: narrow focus or find new market',
+                        'Rewrite value proposition in customer\'s words',
+                        'Remove 3 features nobody uses',
+                        'Test new positioning with 5 prospects'
+                    ]
+                },
+                {
+                    day: 'Days 8-14: Validate Changes',
+                    time: '12 hours total',
+                    tasks: [
+                        'Run targeted ads to new positioning',
+                        'Measure engagement with new message',
+                        'Get 10 new customers with new approach',
+                        'Track if retention improves'
+                    ]
+                }
+            ];
+        }
+        
+        // Download function with branded PDF
+        function downloadPlan() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+            
+            // Get diagnosis data
+            const bottleneck = document.getElementById('bottleneckTitle').textContent;
+            const description = document.getElementById('bottleneckDescription').textContent;
+            const impact = document.getElementById('revenueImpact').textContent;
+            
+            // Get bottleneck type
+            let bottleneckType = 'pricing';
+            if (bottleneck.includes('Retention')) bottleneckType = 'retention';
+            if (bottleneck.includes('Acquisition')) bottleneckType = 'acquisition';
+            if (bottleneck.includes('Operational')) bottleneckType = 'operations';
+            if (bottleneck.includes('Product-Market')) bottleneckType = 'pmf';
+            
+            // Brand colors
+            const purple = [143, 90, 243];
+            const pink = [255, 168, 203];
+            const darkBg = [5, 3, 16];
+            const textLight = [248, 246, 255];
+            const textMuted = [184, 169, 209];
+            
+            // Page setup
+            const pageWidth = 210;
+            const pageHeight = 297;
+            const margin = 20;
+            const lineHeight = 7;
+            let yPosition = margin;
+            
+            // Helper function to check page break
+            function checkPageBreak(neededSpace) {
+                if (yPosition + neededSpace > pageHeight - margin) {
+                    doc.addPage();
+                    yPosition = margin;
+                    addPageHeader();
+                }
+            }
+            
+            // Helper function to add page header
+            function addPageHeader() {
+                doc.setFillColor(...purple);
+                doc.rect(0, 0, pageWidth, 3, 'F');
+                doc.setFillColor(...pink);
+                doc.rect(0, 3, pageWidth, 1, 'F');
+            }
+            
+            // Add header gradient bars
+            addPageHeader();
+            
+            // Title section
+            doc.setFillColor(...darkBg);
+            doc.rect(0, 10, pageWidth, 40, 'F');
+            
+            // Logo/Brand
+            doc.setTextColor(...textLight);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(24);
+            doc.text('StartupStage', margin, 25);
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(...textMuted);
+            doc.text('GROWTH DIAGNOSTIC - IMPLEMENTATION GUIDE', margin, 32);
+            
+            // Date
+            doc.setFontSize(9);
+            doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - margin - 35, 32);
+            
+            yPosition = 60;
+            
+            // Diagnosis header
+            doc.setTextColor(...purple);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(18);
+            const titleLines = doc.splitTextToSize(bottleneck.toUpperCase(), pageWidth - (margin * 2));
+            doc.text(titleLines, margin, yPosition);
+            yPosition += titleLines.length * 8;
+            
+            // Description
+            doc.setTextColor(100, 100, 100);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            const descLines = doc.splitTextToSize(description, pageWidth - (margin * 2));
+            doc.text(descLines, margin, yPosition);
+            yPosition += descLines.length * 5 + 5;
+            
+            // Impact box
+            doc.setFillColor(243, 240, 255);
+            doc.roundedRect(margin, yPosition, pageWidth - (margin * 2), 20, 3, 3, 'F');
+            doc.setTextColor(...purple);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('POTENTIAL MONTHLY IMPACT:', margin + 5, yPosition + 7);
+            doc.setFontSize(14);
+            doc.text(impact, margin + 5, yPosition + 15);
+            yPosition += 25;
+            
+            // Key Issues
+            doc.setTextColor(50, 50, 50);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('KEY ISSUES IDENTIFIED:', margin, yPosition);
+            yPosition += 10;
+            
+            // Add symptoms
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            document.querySelectorAll('.symptom-item').forEach((symptom, index) => {
+                const title = symptom.querySelector('.symptom-title').textContent;
+                const desc = symptom.querySelector('div:last-child').textContent;
+                
+                checkPageBreak(20);
+                
+                // Symptom number and title
+                doc.setFont('helvetica', 'bold');
+                doc.setTextColor(...purple);
+                doc.text(`${index + 1}. ${title}`, margin, yPosition);
+                yPosition += 6;
+                
+                // Symptom description
+                doc.setFont('helvetica', 'normal');
+                doc.setTextColor(80, 80, 80);
+                const symptomLines = doc.splitTextToSize(desc, pageWidth - (margin * 2) - 10);
+                doc.text(symptomLines, margin + 5, yPosition);
+                yPosition += symptomLines.length * 5 + 5;
+            });
+            
+            // Add page break before implementation plan
+            doc.addPage();
+            addPageHeader();
+            yPosition = margin;
+            
+            // Implementation Plan Header
+            doc.setFillColor(...purple);
+            doc.rect(margin, yPosition, pageWidth - (margin * 2), 12, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('14-DAY IMPLEMENTATION PLAN', margin + 5, yPosition + 8);
+            yPosition += 20;
+            
+            // Get implementation content based on bottleneck type
+            let implementationContent = '';
+            if (bottleneckType === 'pricing') {
+                implementationContent = getPricingImplementation();
+            } else if (bottleneckType === 'retention') {
+                implementationContent = getRetentionImplementation();
+            } else if (bottleneckType === 'acquisition') {
+                implementationContent = getAcquisitionImplementation();
+            } else if (bottleneckType === 'operations') {
+                implementationContent = getOperationsImplementation();
+            } else {
+                implementationContent = getPMFImplementation();
+            }
+            
+            // Parse and format implementation content
+            const sections = implementationContent.split('\n\n');
+            
+            sections.forEach(section => {
+                const lines = section.split('\n');
+                
+                lines.forEach(line => {
+                    if (!line.trim()) return;
+                    
+                    // Check for section headers (all caps or with ====)
+                    if (line.includes('====') || line.includes('----')) {
+                        return; // Skip separator lines
+                    } else if (line === line.toUpperCase() && line.length > 10) {
+                        // Major section header
+                        checkPageBreak(15);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(12);
+                        doc.setTextColor(...purple);
+                        doc.text(line, margin, yPosition);
+                        yPosition += 8;
+                    } else if (line.startsWith('DAYS ') || line.startsWith('Days ')) {
+                        // Day headers
+                        checkPageBreak(15);
+                        doc.setFillColor(240, 235, 255);
+                        doc.roundedRect(margin, yPosition - 5, pageWidth - (margin * 2), 10, 2, 2, 'F');
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(11);
+                        doc.setTextColor(...purple);
+                        doc.text(line, margin + 3, yPosition);
+                        yPosition += 8;
+                    } else if (line.startsWith('[ ]')) {
+                        // Task items
+                        checkPageBreak(8);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(9);
+                        doc.setTextColor(50, 50, 50);
+                        
+                        // Add checkbox
+                        doc.rect(margin + 2, yPosition - 3, 3, 3);
+                        
+                        // Add task text
+                        const taskText = line.substring(3).trim();
+                        const taskLines = doc.splitTextToSize(taskText, pageWidth - (margin * 2) - 10);
+                        doc.text(taskLines, margin + 8, yPosition);
+                        yPosition += taskLines.length * 4 + 2;
+                    } else if (line.match(/^[A-Z][A-Z\s]+:/)) {
+                        // Sub-headers (e.g., "BEST PRACTICE:", "HOW TO:")
+                        checkPageBreak(8);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(9);
+                        doc.setTextColor(...purple);
+                        doc.text(line, margin + 5, yPosition);
+                        yPosition += 5;
+                    } else if (line.startsWith('    ')) {
+                        // Indented content
+                        checkPageBreak(6);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(9);
+                        doc.setTextColor(80, 80, 80);
+                        const indentedLines = doc.splitTextToSize(line.trim(), pageWidth - (margin * 2) - 15);
+                        doc.text(indentedLines, margin + 10, yPosition);
+                        yPosition += indentedLines.length * 4 + 1;
+                    } else {
+                        // Regular text
+                        checkPageBreak(6);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(9);
+                        doc.setTextColor(60, 60, 60);
+                        const textLines = doc.splitTextToSize(line, pageWidth - (margin * 2) - 5);
+                        doc.text(textLines, margin + 5, yPosition);
+                        yPosition += textLines.length * 4 + 1;
+                    }
+                });
+                
+                yPosition += 3; // Space between sections
+            });
+            
+            // Add final CTA page
+            doc.addPage();
+            addPageHeader();
+            yPosition = pageHeight / 3;
+            
+            // CTA Box
+            doc.setFillColor(...darkBg);
+            doc.rect(margin, yPosition - 10, pageWidth - (margin * 2), 80, 'F');
+            
+            doc.setTextColor(...textLight);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(16);
+            doc.text('NEED HELP IMPLEMENTING THIS PLAN?', pageWidth / 2, yPosition, { align: 'center' });
+            
+            yPosition += 12;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            doc.setTextColor(...textMuted);
+            doc.text('StartupStage members get:', pageWidth / 2, yPosition, { align: 'center' });
+            
+            yPosition += 8;
+            const benefits = [
+                '• Monthly 1-on-1 calls with experienced founders',
+                '• Access to 20+ fractional C-suite experts',
+                '• Weekly implementation workshops',
+                '• Private community of serious founders'
+            ];
+            
+            doc.setFontSize(10);
+            benefits.forEach(benefit => {
+                doc.text(benefit, pageWidth / 2, yPosition, { align: 'center' });
+                yPosition += 5;
+            });
+            
+            yPosition += 5;
+            doc.setFont('helvetica', 'bold');
+            doc.setTextColor(...purple);
+            doc.text('Your $47 diagnostic fee applies to your first month', pageWidth / 2, yPosition, { align: 'center' });
+            
+            yPosition += 10;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.setTextColor(...textMuted);
+            doc.text('Schedule your included expert call:', pageWidth / 2, yPosition, { align: 'center' });
+            yPosition += 5;
+            doc.setTextColor(...pink);
+            doc.textWithLink('cal.com/startupstage/get-unstuck-1-on-1-founder-call', pageWidth / 2, yPosition, {
+                url: 'https://cal.com/startupstage/get-unstuck-1-on-1-founder-call',
+                align: 'center'
+            });
+            
+            yPosition += 10;
+            doc.setTextColor(...textMuted);
+            doc.text('Join StartupStage ($199/month • No equity • Cancel anytime):', pageWidth / 2, yPosition, { align: 'center' });
+            yPosition += 5;
+            doc.setTextColor(...pink);
+            doc.textWithLink('startupstage.com/join', pageWidth / 2, yPosition, {
+                url: 'https://startupstage.com/join',
+                align: 'center'
+            });
+            
+            // Save the PDF
+            doc.save('startupstage-implementation-guide.pdf');
+        }
+        
+        function getPricingImplementation() {
+            return `DAYS 1-3: PRICE DISCOVERY & RESEARCH
+=====================================
+Time: 6 hours total (2 hours per day)
+
+[ ] Call 5 customers: "What value do you get from our product?"
+    BEST PRACTICE: Schedule 30-min calls, not emails. You need to hear their tone.
+    SCRIPT: "Hi [Name], I'm doing customer research to improve our product. 
+    Can you help me understand what specific value you get from [product]?
+    What would happen if you couldn't use it anymore?"
+    LISTEN FOR: Specific metrics they mention, emotional responses, alternative solutions
+
+[ ] Research 3 competitors' pricing pages
+    HOW TO: Use archive.org to see their pricing evolution over time
+    LOOK FOR: Price points, tier names, feature differentiation, annual discounts
+    DOCUMENT: Create a spreadsheet with columns for Company, Tiers, Prices, Key Features
+    TOOLS: Use similarweb.com to estimate their traffic/size
+
+[ ] Calculate your true cost per customer
+    FORMULA: (All monthly costs) / (Number of active customers)
+    INCLUDE: Hosting, tools, support time (your hourly rate × hours), payment processing
+    DON'T FORGET: Hidden costs like customer acquisition cost, onboarding time
+
+[ ] Document which features customers actually use
+    HOW TO: Check your analytics/database for feature usage in last 30 days
+    80/20 RULE: You'll likely find 20% of features get 80% of usage
+    ACTION: List features by usage frequency, note which paying tiers use what
+
+
+DAYS 4-7: TEST & IMPLEMENT NEW PRICING
+=======================================
+Time: 8 hours total
+
+[ ] Raise prices 20% for NEW customers only
+    DO: Grandfather existing customers at current rate (builds loyalty)
+    DON'T: Announce the increase publicly or apologize for pricing
+    MESSAGING: Focus on value, not cost. "Investment" not "price"
+    EXAMPLE: If you charge $49, new price is $59. Round to $60 for cleaner number.
+
+[ ] Create one premium tier with 2x pricing
+    NAMING: Use aspirational names (Professional → Enterprise, not Basic → Premium)
+    FEATURES: Add 3-5 features only valuable to power users:
+      - Priority support (same support, just faster response promise)
+      - Advanced analytics/reporting (often just different data views)
+      - Higher limits (10x current, costs you nothing if unused)
+      - Custom onboarding (one 30-min call)
+      - Quarterly business reviews (one email)
+    POSITIONING: "For teams serious about [outcome]"
+
+[ ] Design a services package ($2-5K one-time)
+    OPTIONS:
+    1. "Quick Start" Implementation - $2,500
+       - 2 hour kickoff call
+       - Custom setup and configuration
+       - 30 days of priority support
+       - Recording of setup for team training
+    
+    2. "Full Migration" Service - $5,000
+       - Complete data migration from competitor
+       - Custom integrations setup
+       - Team training workshop (virtual)
+       - 90 days priority support
+
+    DELIVERY: You can outsource to Upwork/Fiverr after documenting process
+
+[ ] Update website with new pricing
+    PSYCHOLOGY: Put premium tier in middle (makes it look like best value)
+    HIGHLIGHT: "Most Popular" badge on tier you want them to choose
+    ADD: "Save 20%" banner on annual pricing toggle
+    URGENCY: "Prices increasing soon" or "Grandfather rate available"
+
+
+DAYS 8-14: EXPAND REVENUE STREAMS
+==================================
+Time: 10 hours total
+
+[ ] Launch annual plans (2 months free = 17% discount)
+    EMAIL TEMPLATE:
+    "Subject: Lock in your rate forever (ends Friday)
+    
+    Hi [Name],
+    
+    Quick note - we're raising prices next month for new customers.
+    
+    But you can lock in your current rate forever by switching to annual.
+    Plus you'll save 2 months (worth $[amount]).
+    
+    [Button: Switch to Annual - Save $X]
+    
+    This rate is guaranteed as long as you stay subscribed.
+    
+    -[Your name]"
+    
+    TIMING: Send Tuesday 10am in customer's timezone
+    FOLLOW-UP: Thursday if no response
+
+[ ] Email top 20% of customers about premium tier
+    IDENTIFY: Customers who log in most, use most features, or pay on time
+    SUBJECT LINES TO TEST:
+    - "You're invited to our new [Premium] tier"
+    - "[Name], you qualify for advanced features"
+    - "Exclusive upgrade for our power users"
+    
+    OFFER: 20% off first 3 months of premium to make switching easier
+
+[ ] Track acceptance rates daily
+    METRICS: Create simple spreadsheet with:
+    - Date
+    - # Trials Started
+    - # Converted to Paid
+    - # Upgraded to Premium
+    - # Switched to Annual
+    
+    TARGET: >80% accept new pricing = room to increase more
+    WARNING: <60% acceptance = gather feedback before continuing
+
+[ ] Plan next price increase if >80% accept
+    TIMELINE: Wait 6 months minimum between increases
+    AMOUNT: 15-20% each time
+    COMMUNICATION: Always grandfather existing customers
+
+
+BONUS TEMPLATES & RESOURCES
+============================
+
+PRICE INCREASE EMAIL TO EXISTING CUSTOMERS:
+-------------------------------------------
+Subject: Your pricing is safe (important update)
+
+Hi [Name],
+
+I wanted you to hear this from me first.
+
+We're increasing prices for NEW customers starting [date]. 
+
+But here's the important part: **Your price will never change.**
+
+You're grandfathered at $[current price] forever, as our thanks for believing in us early.
+
+The new pricing reflects the value we now deliver - [list 2-3 improvements].
+
+If you know anyone who could benefit from [product], they might want to sign up 
+before [date] to get your rate.
+
+Thanks for being an early supporter,
+[Your name]
+
+P.S. Want to lock in this rate with annual? Reply and I'll send a special link.
+
+
+PRICING PSYCHOLOGY TIPS:
+------------------------
+• End prices in 9 for consumer ($49) or 0 for B2B ($50)
+• Three tiers convert better than two or four
+• Show annual savings as dollar amount, not percentage
+• Use "per user" pricing only if customers naturally think that way
+• Highlight "Most Popular" on the tier you want them to choose
+• Put enterprise/custom pricing behind "Contact Us" (creates intrigue)
+
+
+COMMON PRICING MISTAKES TO AVOID:
+---------------------------------
+❌ Competing on price (race to the bottom)
+❌ Too many pricing tiers (paralysis of choice)
+❌ Feature-based differentiation only (differentiate on outcomes)
+❌ Discounting too quickly (devalues product)
+❌ Complex pricing that requires calculator
+❌ Hiding pricing completely (reduces trust)
+❌ Apologizing for prices (shows lack of confidence)`;
+        }
+        
+        function getRetentionImplementation() {
+            return `DAYS 1-3: DIAGNOSE WHY CUSTOMERS LEAVE
+========================================
+Time: 8 hours total
+
+[ ] Export list of churned customers from last 60 days
+    TOOLS: Your payment processor (Stripe/PayPal) or subscription manager
+    DATA TO CAPTURE: Name, email, signup date, cancel date, total paid, last login
+    SEGMENT BY: Time to churn (under 30 days, 30-90 days, 90+ days)
+    PATTERN RECOGNITION: Look for commonalities in churned customers
+
+[ ] Email 10 churned users for 15-min calls
+    SUBJECT: "Quick question about why you left [Product]"
+    
+    EMAIL TEMPLATE:
+    "Hi [Name],
+    
+    I noticed you cancelled [Product] recently. I completely respect your decision.
+    
+    I'm trying to improve the product for future customers. Would you be open to 
+    a quick 15-min call to share what didn't work for you?
+    
+    As a thank you, I'll send you a $25 Amazon gift card.
+    
+    [Calendar link]
+    
+    No sales pitch, promise. Just want to learn.
+    
+    -[Your name]"
+    
+    QUESTIONS TO ASK:
+    1. What made you initially sign up?
+    2. When did you realize it wasn't working?
+    3. What specific moment made you decide to cancel?
+    4. What are you using instead now?
+    5. What would have kept you as a customer?
+
+[ ] Analyze usage data before churn
+    LOOK FOR: Last login, feature usage decline, support tickets
+    RED FLAGS: 
+    - No login in 14+ days
+    - Sudden drop in usage
+    - Unresolved support ticket
+    - Failed payment attempts
+    CREATE: "Churn risk score" based on these signals
+
+[ ] Identify top 3 churn triggers
+    COMMON TRIGGERS:
+    - Never reached "aha moment" (didn't see value)
+    - Too complex to set up
+    - Missing key feature they needed
+    - Price vs value mismatch
+    - Found better alternative
+    - Business need changed
+
+
+DAYS 4-7: FIX YOUR ONBOARDING
+==============================
+Time: 10 hours total
+
+[ ] Map your current onboarding flow
+    DOCUMENT: Every step from signup to first value
+    TIME IT: How long until they see value?
+    COUNT: How many clicks/steps required?
+    TEST: Sign up as new user yourself (use incognito)
+
+[ ] Identify where users get stuck
+    ANALYTICS: Check where users drop off in the flow
+    COMMON STICKING POINTS:
+    - Too many fields in signup
+    - Unclear next steps after signup
+    - Feature overwhelm
+    - No quick win
+
+[ ] Create 3 onboarding emails for new users
+    
+    EMAIL 1 - IMMEDIATELY AFTER SIGNUP:
+    Subject: "Your account is ready! (start here)"
+    - Welcome them by name
+    - One clear action to take
+    - Link to 2-min video showing quick win
+    - Your personal email for questions
+    
+    EMAIL 2 - DAY 3:
+    Subject: "Most people miss this feature..."
+    - Highlight underused but valuable feature
+    - Show specific use case
+    - Include screenshot/GIF
+    - "Reply if you need help"
+    
+    EMAIL 3 - DAY 7:
+    Subject: "[Name], quick check-in"
+    - Ask how it's going
+    - Share success story from similar customer
+    - Offer 15-min setup call
+    - Reminder of value prop
+
+[ ] Add progress bar to setup process
+    IMPLEMENTATION: Show "Setup: 40% complete"
+    GAMIFICATION: ✓ checkmarks for completed steps
+    MOTIVATION: "Just 2 more steps to go!"
+    CELEBRATION: Confetti animation when done
+
+
+DAYS 8-14: BUILD ENGAGEMENT SYSTEMS
+====================================
+Time: 8 hours total
+
+[ ] Set up weekly check-in emails
+    SEGMENT USERS:
+    - Power users: Feature announcements, advanced tips
+    - Regular users: Use case examples, best practices
+    - Low engagement: Re-engagement campaigns
+    
+    TEMPLATE FOR LOW ENGAGEMENT:
+    Subject: "You haven't used [key feature] yet"
+    
+    "Hi [Name],
+    
+    I noticed you haven't tried [specific feature] yet.
+    
+    Here's why it matters: [specific benefit]
+    
+    [Customer name] used it to [specific result].
+    
+    Takes 2 minutes to set up: [direct link]
+    
+    -[Your name]
+    
+    P.S. Need help? Just reply to this email."
+
+[ ] Create re-engagement campaign for dormant users
+    TRIGGER: No login in 7 days
+    
+    SEQUENCE:
+    Day 7: "We miss you" - what's new
+    Day 14: "Quick question" - ask for feedback
+    Day 21: Case study of success
+    Day 28: "Should we pause your account?"
+    Day 30: Final value reminder
+    
+    OFFER: "Come back" incentive (free month, upgrade, training)
+
+[ ] Launch "office hours" for struggling customers
+    FORMAT: Weekly 30-min group Zoom call
+    TIME: Test Tuesdays 2pm ET and Thursdays 11am ET
+    PROMOTE: Email struggling segments
+    TOPICS: Live Q&A, specific tutorials, success strategies
+    RECORD: Post recordings for those who miss
+
+[ ] Implement usage-based upgrade prompts
+    TRIGGERS:
+    - Hit 80% of plan limit
+    - Used premium feature 3x (in trial)
+    - Added team members
+    - High engagement score
+    
+    IN-APP MESSAGE:
+    "You're using [Product] like a pro! 
+    Unlock [specific features] with [Premium Plan]
+    [Upgrade Now] [Remind Me Later]"
+
+
+RETENTION METRICS TO TRACK
+===========================
+Create a simple spreadsheet tracking:
+
+WEEKLY:
+- New signups
+- Active users (logged in past 7 days)
+- Churned users
+- Reactivated users
+
+MONTHLY:
+- Gross MRR churn rate (aim for <5%)
+- Net MRR retention (aim for >100%)
+- Customer lifetime value
+- Average customer lifespan
+
+COHORT ANALYSIS:
+Track each month's signups separately
+See which months retain better
+Identify what you did differently
+
+
+EMERGENCY SAVES FOR AT-RISK ACCOUNTS
+=====================================
+
+PAYMENT FAILURE SEQUENCE:
+Day 1: "Payment issue - account still active"
+Day 3: "Your payment failed (quick fix)"
+Day 5: "Last chance before downgrade"
+Day 7: Downgrade to free/pause account
+
+CANCELLATION FLOW:
+1. "Why are you leaving?" (multiple choice)
+2. Offer relevant save based on reason:
+   - Too expensive → Offer discount or downgrade
+   - Not using → Offer pause instead
+   - Missing features → Show roadmap
+   - Too complex → Offer free onboarding call
+3. "Take a break" option (pause for 3 months)
+4. Exit interview question (optional)
+
+
+TEMPLATES FOR COMMON SITUATIONS
+================================
+
+WIN-BACK EMAIL (30 days after churn):
+Subject: "[Name], your data is still here"
+
+"Hi [Name],
+
+It's been a month since you left [Product].
+
+Your account and data are still here waiting for you.
+
+We've also added [new feature] that addresses [problem they had].
+
+Want to give it another shot? Here's 50% off your first month back:
+[Reactivate with Code: COMEBACK50]
+
+-[Your name]"`;
+        }
+        
+        function getAcquisitionImplementation() {
+            return `DAYS 1-3: ANALYZE YOUR FUNNEL
+==============================
+Time: 6 hours total
+
+[ ] List all current traffic sources
+    WHERE TO FIND: Google Analytics, your analytics tool
+    DOCUMENT: Source, monthly visitors, conversion rate, CAC
+    CALCULATE: Revenue per source (to find hidden winners)
+    IDENTIFY: Your #1 performing source by ROI, not volume
+
+[ ] Calculate CAC for each channel
+    FORMULA: (Channel spend + time cost) / (customers from channel)
+    TIME COST: Your hourly rate × hours on that channel
+    COMPARE: CAC vs customer lifetime value (LTV)
+    TARGET: LTV:CAC ratio should be 3:1 minimum
+
+[ ] Identify your #1 performing channel
+    BEST = Lowest CAC + highest quality customers
+    QUALITY SIGNALS: Lower churn, higher LTV, faster conversion
+    DOCUMENT: What exactly works in this channel
+
+[ ] Document your sales process end-to-end
+    MAP: Every touchpoint from awareness to purchase
+    TIME: How long from first touch to close?
+    STEPS: Count every interaction required
+    FRICTION: Where do people drop off?
+
+
+DAYS 4-7: OPTIMIZE YOUR BEST CHANNEL
+=====================================
+Time: 10 hours total
+
+[ ] Double down on best channel
+    INCREASE: Budget/time by 50% immediately
+    TEST: Can it scale or does quality drop?
+    DOCUMENT: Daily metrics as you scale
+    AUTOMATE: What parts can tools handle?
+
+[ ] A/B test 3 new headlines/messages
+    WHERE: Landing pages, ads, emails
+    
+    HEADLINE FORMULAS TO TEST:
+    1. How to [achieve desire] without [pain point]
+       "How to scale to $100K MRR without giving up equity"
+    
+    2. [Number] ways to [achieve outcome]
+       "5 ways to double revenue without raising prices"
+    
+    3. The [adjective] guide to [outcome]
+       "The zero-equity guide to scaling your startup"
+    
+    TEST ONE VARIABLE: Don't change multiple things at once
+    STATISTICAL SIGNIFICANCE: Need 100+ conversions per variant
+
+[ ] Improve landing page conversion
+    ABOVE THE FOLD MUST-HAVES:
+    - Clear headline (what you do)
+    - Subheadline (for whom and why)
+    - One clear CTA button
+    - Social proof (logos or testimonial)
+    - Visual (screenshot, video, or demo)
+    
+    PSYCHOLOGY TRIGGERS:
+    - Urgency: "Join 347 founders who..."
+    - Authority: "As featured in..."
+    - Social proof: Customer logos/testimonials
+    - Scarcity: "Only accepting 10 new members"
+    
+    REMOVE: Navigation menu, multiple CTAs, walls of text
+
+[ ] Set up proper conversion tracking
+    GOOGLE ANALYTICS: Set up goals for:
+    - Newsletter signups
+    - Trial starts
+    - Paid conversions
+    - Feature usage
+    
+    UTM PARAMETERS: Add to every link:
+    - utm_source (where from)
+    - utm_medium (type of link)  
+    - utm_campaign (specific campaign)
+    
+    FACEBOOK PIXEL: Track visitor actions for retargeting
+    HEATMAPS: Use Hotjar/Clarity to see user behavior
+
+
+DAYS 8-14: SCALE WHAT WORKS
+============================
+Time: 12 hours total
+
+[ ] Increase budget on winning channel by 50%
+    GRADUAL: Increase 10% daily to maintain quality
+    MONITOR: CAC and conversion rates daily
+    PAUSE IF: CAC increases by >30% or quality drops
+
+[ ] Create 5 pieces of content for that channel
+    
+    LINKEDIN CONTENT IDEAS:
+    - Contrarian take on industry norm
+    - Breakdown of your process
+    - Customer success story
+    - Lessons learned from failure
+    - Data/insights your audience lacks
+    
+    GOOGLE ADS COPY:
+    - Address specific pain points
+    - Include numbers/specifics
+    - Clear CTA in headline
+    - Use all available extensions
+    
+    EMAIL TEMPLATES:
+    - Problem/solution/proof/CTA structure
+    - Subject lines under 50 characters
+    - One clear CTA per email
+    - PS line with secondary value
+
+[ ] Test one new similar channel
+    IF GOOGLE ADS WORK: Try Bing ads (cheaper, less competition)
+    IF LINKEDIN WORKS: Try Twitter ads (similar B2B audience)
+    IF CONTENT WORKS: Try podcast guesting (same effort, new audience)
+    IF EMAIL WORKS: Try LinkedIn outreach (similar personal touch)
+
+[ ] Document playbook for repeatable execution
+    CREATE: Step-by-step guide for what worked
+    INCLUDE: Templates, examples, metrics
+    TIME: How long each step takes
+    TOOLS: Exactly what you used
+    RESULTS: What to expect at each stage
+
+
+CHANNEL-SPECIFIC PLAYBOOKS
+===========================
+
+GOOGLE ADS QUICK START:
+1. Start with 10 exact-match keywords
+2. One ad group per keyword
+3. 3 ads per ad group
+4. Landing page matches ad copy
+5. Start at $50/day budget
+6. Optimize for conversions after 50 clicks
+
+LINKEDIN ORGANIC STRATEGY:
+1. Post daily at 8am ET
+2. No links in post (put in comments)
+3. Use line breaks every 1-2 sentences
+4. Ask question at end
+5. Respond to every comment in first hour
+6. Connection requests to all engagers
+
+COLD EMAIL THAT WORKS:
+Subject: "Quick question about [their company]"
+
+"Hi [Name],
+
+I noticed [specific thing about their company].
+
+We help companies like [similar customer] achieve 
+[specific result].
+
+Worth a quick chat?
+
+[Your name]
+P.S. [Personalized detail]"
+
+CONTENT MARKETING FORMULA:
+1. Research: What are top 10 questions in your space?
+2. Create: Detailed guide answering each
+3. Optimize: Target long-tail keywords
+4. Promote: Share in relevant communities
+5. Repurpose: Turn into video, podcast, tweets
+
+
+ACQUISITION METRICS DASHBOARD
+==============================
+Track weekly in simple spreadsheet:
+
+TRAFFIC:
+- Unique visitors
+- Traffic by source
+- Bounce rate
+- Pages per session
+
+CONVERSION:
+- Trial signups
+- Trial → Paid %
+- Sales qualified leads
+- Close rate
+
+ECONOMICS:
+- CAC by channel
+- Payback period
+- LTV:CAC ratio
+- Monthly burn rate
+
+
+TOOLS FOR GROWTH
+================
+
+FREE:
+- Google Analytics (traffic analysis)
+- Google Search Console (SEO)
+- Facebook Pixel Helper (tracking)
+- Ubersuggest (keyword research)
+- Canva (design)
+
+PAID BUT WORTH IT:
+- Ahrefs ($99/mo) - SEO/content research
+- Apollo.io ($49/mo) - B2B prospecting
+- Instantly ($37/mo) - Cold email
+- Buffer ($15/mo) - Social scheduling
+- Hotjar ($32/mo) - User behavior
+
+
+RED FLAGS TO WATCH
+==================
+⚠️ CAC exceeding monthly subscription value
+⚠️ Conversion rate dropping week-over-week
+⚠️ One channel is >80% of acquisition
+⚠️ Growth is purely from paid ads
+⚠️ Sales cycle lengthening
+⚠️ Quality of leads decreasing`;
+        }
+        
+        function getOperationsImplementation() {
+            return `DAYS 1-3: TIME AND TASK AUDIT
+==============================
+Time: 4 hours total
+
+[ ] Track every task for 3 days
+    USE: Simple spreadsheet or Toggl
+    COLUMNS: Task, Time Spent, Category, Could be Automated/Delegated?
+    CATEGORIES: Sales, Marketing, Product, Support, Admin
+    BE HONEST: Include "checking email" and "thinking time"
+
+[ ] Identify top 5 time wasters
+    USUAL SUSPECTS:
+    - Email (checking too frequently)
+    - Meetings without agendas
+    - Context switching
+    - Manual data entry
+    - Repetitive customer support
+    - Social media "research"
+    
+    CALCULATE: Hours per week on each
+
+[ ] List all tools you're currently using
+    DOCUMENT: Tool name, cost, purpose, usage frequency
+    IDENTIFY: Overlapping tools doing same thing
+    CALCULATE: Total monthly tool cost
+    QUESTION: Which could you live without?
+
+[ ] Find 3 tasks you can eliminate immediately
+    ASK: What happens if I just... don't do this?
+    80/20 RULE: 20% of tasks drive 80% of results
+    EXAMPLES: 
+    - Daily reports nobody reads
+    - Meetings without clear outcomes
+    - Perfectionist tweaks
+    - Vanity metrics tracking
+
+
+DAYS 4-7: AUTOMATE THE BASICS
+==============================
+Time: 8 hours total
+
+[ ] Set up email templates for common responses
+    CREATE TEMPLATES FOR:
+    - Pricing questions
+    - Feature requests
+    - Onboarding welcome
+    - Payment failures
+    - Cancellation attempts
+    - Support tickets
+    
+    GMAIL: Settings → Advanced → Templates
+    OUTLOOK: Quick Parts feature
+    HELP SCOUT: Saved replies
+    
+    TEMPLATE EXAMPLE:
+    "Hi [Name],
+    
+    Thanks for asking about our pricing!
+    
+    We have three plans:
+    [Insert pricing table]
+    
+    Most companies like yours choose [recommended plan] because [reason].
+    
+    You can start with a free trial here: [link]
+    
+    Any other questions? Just reply to this email.
+    
+    -[Your name]"
+
+[ ] Automate invoice and payment collection
+    STRIPE: Set up automatic invoicing and payment retry
+    RECURRING BILLING: Use subscription management tool
+    DUNNING EMAILS: Automatic payment failure sequences
+    LATE PAYMENT: Automatic reminders at 3, 7, 14 days
+
+[ ] Create SOPs for repetitive tasks
+    FORMAT: Step-by-step with screenshots
+    TOOLS: Loom for video SOPs, Notion for written
+    
+    SOP TEMPLATE:
+    1. Task Name & Frequency
+    2. Time Required
+    3. Tools Needed
+    4. Step-by-Step Process
+    5. Common Issues & Solutions
+    6. Quality Checklist
+    
+    PRIORITIZE SOPS FOR:
+    - Customer onboarding
+    - Content publishing
+    - Invoice processing
+    - Support ticket handling
+    - Social media posting
+
+[ ] Implement basic Zapier workflows
+    
+    STARTER ZAPS (FREE TIER):
+    1. Form submission → Slack notification → Google Sheet
+    2. New customer → Welcome email → CRM entry
+    3. Support ticket → Team notification → Tracking sheet
+    4. Social mention → Slack alert → Response tracking
+    5. Payment received → Thank you email → Accounting sheet
+    
+    TIME SAVED: Each Zap saves 5-15 min per trigger
+
+
+DAYS 8-14: SYSTEMS AND DELEGATION
+==================================
+Time: 10 hours total
+
+[ ] Hire VA for 5 hours/week ($15-25/hour)
+    
+    WHERE TO HIRE:
+    - Upwork (global talent)
+    - Belay (US-based, prescreened)
+    - Time Etc (UK/US experienced)
+    - OnlineJobs.ph (Philippines, great value)
+    
+    TASKS TO DELEGATE:
+    - Email inbox management
+    - Calendar scheduling
+    - Data entry and reporting
+    - Social media posting
+    - Research tasks
+    - Customer support (level 1)
+    
+    ONBOARDING PROCESS:
+    Day 1: Share SOPs and Loom videos
+    Day 2: Shadow you doing tasks
+    Day 3: Do tasks with supervision
+    Day 4: Do tasks with review
+    Day 5: Independent work
+    
+    MANAGEMENT TIPS:
+    - Daily check-in first week
+    - Weekly check-in after that
+    - Use time tracking tool
+    - Create shared task list
+    - Record Loom feedback
+
+[ ] Document your core processes
+    THE BIG 5 TO DOCUMENT:
+    1. Sales process (lead → customer)
+    2. Onboarding process (signup → active)
+    3. Support process (ticket → resolution)
+    4. Content process (idea → published)
+    5. Product process (feature request → shipped)
+    
+    DOCUMENTATION TOOLS:
+    - Notion (free, flexible)
+    - Confluence (robust, integrated)
+    - Google Docs (simple, shareable)
+    - Loom (video walkthroughs)
+
+[ ] Set up project management system
+    
+    TOOL OPTIONS:
+    - Trello (visual, simple) - Free
+    - Asana (comprehensive) - Free for 15 users
+    - ClickUp (all-in-one) - Free tier available
+    - Notion (flexible) - Free for personal
+    
+    BOARD STRUCTURE:
+    - Backlog (ideas)
+    - To Do (committed)
+    - In Progress (working on)
+    - Review (needs approval)
+    - Done (completed)
+    
+    WEEKLY PLANNING:
+    - Monday: Review last week, plan this week
+    - Daily: Move cards, update status
+    - Friday: Clean up board, celebrate wins
+
+[ ] Create weekly dashboard for key metrics
+    
+    ONE-PAGE DASHBOARD INCLUDES:
+    - Revenue (MRR, growth rate)
+    - Customers (new, churned, total)
+    - Usage (DAU, key feature adoption)
+    - Pipeline (leads, trials, close rate)
+    - Operations (support tickets, response time)
+    
+    TOOLS:
+    - Google Sheets (free, flexible)
+    - Databox (pulls from all tools)
+    - Geckoboard (visual displays)
+    - Klipfolio (advanced analytics)
+    
+    UPDATE FREQUENCY:
+    - Revenue: Daily
+    - Customers: Daily
+    - Usage: Weekly
+    - Pipeline: Weekly
+    - Operations: Daily
+
+
+PRODUCTIVITY FRAMEWORKS
+=======================
+
+TIME BLOCKING METHOD:
+- 9-11am: Deep work (product/strategy)
+- 11am-12pm: Communications
+- 1-3pm: Meetings/calls
+- 3-5pm: Admin/operations
+- 5-6pm: Planning tomorrow
+
+EISENHOWER MATRIX:
+- Urgent + Important: Do now
+- Not Urgent + Important: Schedule
+- Urgent + Not Important: Delegate
+- Not Urgent + Not Important: Delete
+
+BATCH PROCESSING:
+- Email: 2x daily (11am, 4pm)
+- Social media: 1x weekly batch creation
+- Content: Monthly planning, weekly creation
+- Meetings: Specific days only
+- Admin: Friday afternoons
+
+PARKINSON'S LAW:
+"Work expands to fill time available"
+- Set aggressive deadlines
+- Use timers for tasks
+- Ship at 80% perfect
+- Iterate after shipping
+
+
+TOOLS TO ELIMINATE FRICTION
+============================
+
+COMMUNICATION:
+- Calendly (eliminates back-and-forth)
+- Loom (replaces long emails)
+- Slack (centralizes team chat)
+- Typeform (beautiful forms)
+
+AUTOMATION:
+- Zapier (connects everything)
+- IFTTT (simple automations)
+- Make/Integromat (complex workflows)
+- Phantombuster (web automation)
+
+PRODUCTIVITY:
+- Rescue Time (tracks where time goes)
+- Freedom (blocks distractions)
+- TextExpander (types repetitive text)
+- Alfred/Raycast (Mac productivity)
+
+OPERATIONS:
+- Process.st (process checklists)
+- Trainual (team training)
+- Bardeen (browser automation)
+- Magical (repetitive typing)
+
+
+WARNING SIGNS YOU'RE STILL INEFFICIENT
+=======================================
+🚨 Working >60 hours but revenue flat
+🚨 Everything breaks when you take a day off
+🚨 Doing same tasks as 6 months ago
+🚨 No documented processes
+🚨 Context switching every 15 minutes
+🚨 Inbox has >50 unread emails
+🚨 Can't take vacation without laptop`;
+        }
+        
+        function getPMFImplementation() {
+            return `DAYS 1-3: DEEP CUSTOMER DISCOVERY
+==================================
+Time: 10 hours total
+
+[ ] Interview 10 customers about their #1 problem
+    
+    RECRUITING EMAIL:
+    "Subject: 15 min chat - $25 Amazon card
+    
+    Hi [Name],
+    
+    I'm researching how to make [Product] better for customers like you.
+    
+    Would you have 15 minutes this week for a quick call?
+    I'll send you a $25 Amazon gift card as a thank you.
+    
+    [Calendar link]
+    
+    -[Your name]"
+    
+    THE MOM TEST QUESTIONS:
+    1. "Tell me about the last time you faced [problem]"
+    2. "What did you try to solve it?"
+    3. "What was frustrating about those solutions?"
+    4. "How are you solving it now?"
+    5. "What would a perfect solution look like?"
+    
+    DON'T ASK: "Would you use..." or "Do you think..."
+    DO ASK: About specific past behaviors and current solutions
+
+[ ] Ask: "How disappointed would you be if we disappeared?"
+    THE SEAN ELLIS TEST:
+    - Very disappointed
+    - Somewhat disappointed  
+    - Not disappointed
+    
+    PMF BENCHMARK: 40%+ say "very disappointed"
+    
+    FOLLOW-UP: "What would you use instead?"
+    This reveals your true competition
+
+[ ] Document exact words customers use
+    LISTEN FOR:
+    - How they describe the problem
+    - Words they use repeatedly
+    - Emotional language
+    - Outcome descriptions
+    
+    CREATE: "Voice of Customer" document with exact quotes
+    USE: This language in all your marketing
+
+[ ] Identify patterns in feedback
+    LOOK FOR:
+    - Same problem mentioned 3+ times
+    - Common workarounds they're using
+    - Features they ignore
+    - Jobs they're trying to do
+    
+    JOBS-TO-BE-DONE FRAMEWORK:
+    "When I [situation], I want to [motivation], 
+    so I can [expected outcome]"
+
+
+DAYS 4-7: PIVOT OR PERSEVERE DECISION
+======================================
+Time: 8 hours total
+
+[ ] Decide: narrow focus or find new market
+    
+    IF <40% WOULD BE DISAPPOINTED:
+    Option 1: Wrong market, right product
+    - Find people who desperately need this
+    - Look for extreme users
+    
+    Option 2: Right market, wrong product
+    - Pivot features toward core need
+    - Simplify to do one thing perfectly
+    
+    Option 3: Wrong market, wrong product
+    - Major pivot or shut down
+    - Use learnings for next attempt
+    
+    IF 40%+ WOULD BE DISAPPOINTED:
+    - Double down on those who love you
+    - Ignore everyone else
+    - Build for your champions
+
+[ ] Rewrite value proposition in customer's words
+    
+    FORMULA: We help [specific audience] achieve [specific outcome]
+    by [unique method] unlike [alternative]
+    
+    EXAMPLE:
+    "We help bootstrapped SaaS founders reach $10K MRR
+    by implementing systematic growth processes
+    unlike generic accelerator advice"
+    
+    TEST: Can customers explain this to others?
+
+[ ] Remove 3 features nobody uses
+    IDENTIFY: Features with <10% usage
+    REMOVE: Don't hide, actually delete code
+    SIMPLIFY: Fewer features = better experience
+    FOCUS: Core features get more love
+    
+    COMMUNICATE:
+    "We're simplifying [Product] to focus on what matters most.
+    Based on usage data, we're removing [features].
+    This lets us improve [core feature] faster."
+
+[ ] Test new positioning with 5 prospects
+    CREATE: New landing page with new positioning
+    SEND: To prospects, not existing customers
+    ASK: "What do you think this product does?"
+    MEASURE: Do they understand immediately?
+    ITERATE: Based on confusion points
+
+
+DAYS 8-14: VALIDATE THE CHANGES
+================================
+Time: 12 hours total
+
+[ ] Run targeted ads to new positioning
+    BUDGET: $500 across platforms
+    TARGETS: Your newly defined ICP
+    
+    FACEBOOK AD STRUCTURE:
+    - Interest targeting your exact audience
+    - Single clear value prop
+    - Send to dedicated landing page
+    - Track micro-conversions (not just sales)
+    
+    GOOGLE ADS:
+    - Target problem-aware searches
+    - Match ad copy to search intent
+    - Use exact match keywords only
+
+[ ] Measure engagement with new message
+    METRICS TO TRACK:
+    - Click-through rate (>2% good)
+    - Time on page (>2 minutes good)
+    - Bounce rate (<60% good)
+    - Email signups (>5% good)
+    - Trial starts (>2% good)
+    
+    A/B TEST: Old positioning vs new
+    WINNER: Whichever drives more trials
+
+[ ] Get 10 new customers with new approach
+    GOAL: Validate people will pay for new positioning
+    CHANNEL: Whatever worked best in testing
+    PRICE: Test 50% higher price with new positioning
+    MEASURE: Easier to sell? Higher close rate?
+
+[ ] Track if retention improves
+    COHORT ANALYSIS: New positioning customers vs old
+    MEASURE WEEKLY: Login frequency, feature usage, NPS
+    EXPECT: Better retention if true PMF
+    WARNING: May get worse before better as you transition
+
+
+PRODUCT-MARKET FIT INDICATORS
+==============================
+
+STRONG PMF SIGNALS:
+✓ 40%+ would be "very disappointed" without you
+✓ Organic word-of-mouth growth
+✓ Users describe product enthusiastically
+✓ Retention curves flatten (not declining)
+✓ Sales cycles shortening
+✓ Price increases don't affect conversion
+✓ Customer pull vs company push
+
+WEAK PMF SIGNALS:
+✗ Retention steadily declining
+✗ Long sales cycles with education
+✗ Features requested all over the map
+✗ Customers compare you to many alternatives
+✗ Growth requires heavy marketing spend
+✗ Customers churning after trial
+✗ Can't explain value in one sentence
+
+
+REPOSITIONING TEMPLATES
+=======================
+
+NEW WEBSITE HEADLINE:
+"The only [solution] designed specifically for [niche audience]"
+
+COLD EMAIL FOR NEW POSITIONING:
+"Subject: [Specific problem] at [Company]?
+
+Hi [Name],
+
+I noticed [specific observation about their company].
+
+Most [their role] tell me [specific problem].
+
+We built [Product] specifically for [their situation].
+[Similar customer] used it to [specific result].
+
+Worth a quick look? [Link to 2-min video]
+
+-[Your name]"
+
+PIVOT ANNOUNCEMENT TO USERS:
+"Subject: We're doubling down on what you love
+
+Based on your feedback and usage data, we're making
+[Product] dramatically better at [core value].
+
+This means:
+- Removing features that didn't deliver value
+- Faster improvements to [core feature]
+- Lower price for streamlined product
+
+Your account continues normally, but you'll notice
+[specific improvements] starting today.
+
+Questions? Just reply.
+
+-[Your name]"
+
+
+COMMON PMF PIVOTS THAT WORK
+============================
+
+1. VERTICAL FOCUS:
+From: "CRM for small business"
+To: "CRM for digital agencies"
+
+2. USE CASE FOCUS:
+From: "Project management"
+To: "Client onboarding system"
+
+3. BUYER FOCUS:
+From: "For marketing teams"
+To: "For solo consultants"
+
+4. PROBLEM FOCUS:
+From: "All-in-one solution"
+To: "Just fixes [specific pain]"
+
+5. INTEGRATION FOCUS:
+From: "Standalone tool"
+To: "Perfect [Other Tool] addon"
+
+
+VALIDATION FRAMEWORKS
+=====================
+
+ICE SCORING:
+- Impact (if it works, how big?)
+- Confidence (will it work?)
+- Ease (how hard to test?)
+Score each 1-10, multiply together
+
+RISKIEST ASSUMPTION TEST:
+1. List all assumptions
+2. Rank by risk to business
+3. Test highest risk first
+4. Design smallest test possible
+
+CONCIERGE MVP:
+Do it manually first:
+1. Sell the outcome
+2. Deliver with human effort
+3. Learn what to automate
+4. Build only validated features
+
+
+BOOKS TO READ THIS WEEK
+========================
+📚 "The Mom Test" - How to interview customers
+📚 "Jobs to be Done" - Understanding customer needs
+📚 "Lean Startup" - MVP and iteration process
+📚 "Crossing the Chasm" - Market positioning
+📚 "Obviously Awesome" - April Dunford positioning`;
+        }
+    </script>
+</body>
+</html>
