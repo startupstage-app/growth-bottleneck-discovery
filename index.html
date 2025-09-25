@@ -726,12 +726,14 @@
         </div>
     </div>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         // Store answers
         let answers = {};
         let answeredQuestions = new Set();
         const totalQuestions = 10;
+        
+        // Store current diagnosis for use in PDF
+        let currentDiagnosis = null;
         
         // Add click handlers to all option cards
         document.querySelectorAll('.option-card').forEach(card => {
@@ -926,6 +928,13 @@
             
             const [low, high] = mrrRanges[answers.mrr] || [1000, 5000];
             const impact = `$${(low/1000).toFixed(0)}K - $${(high/1000).toFixed(0)}K`;
+            
+            // Store diagnosis for PDF
+            currentDiagnosis = {
+                ...diagnosis,
+                impact: impact,
+                bottleneckType: primaryBottleneck
+            };
             
             // Display results
             document.getElementById('loadingScreen').style.display = 'none';
@@ -1411,1136 +1420,443 @@
             ];
         }
         
-        // Download function with enhanced branded PDF
+        // Download function - creates branded PDF HTML report
         function downloadPlan() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
+            if (!currentDiagnosis) return;
             
-            // Get diagnosis data
-            const bottleneck = document.getElementById('bottleneckTitle').textContent;
-            const description = document.getElementById('bottleneckDescription').textContent;
-            const impact = document.getElementById('revenueImpact').textContent;
-            const badge = document.getElementById('bottleneckBadge').textContent;
-            
-            // Get bottleneck type
-            let bottleneckType = 'pricing';
-            if (bottleneck.includes('Retention')) bottleneckType = 'retention';
-            if (bottleneck.includes('Acquisition')) bottleneckType = 'acquisition';
-            if (bottleneck.includes('Operational')) bottleneckType = 'operations';
-            if (bottleneck.includes('Product-Market')) bottleneckType = 'pmf';
-            
-            // Brand colors
-            const purple = [143, 90, 243];
-            const pink = [255, 168, 203];
-            const darkBg = [5, 3, 16];
-            const textLight = [248, 246, 255];
-            const textMuted = [184, 169, 209];
-            
-            // Page setup
-            const pageWidth = 210;
-            const pageHeight = 297;
-            const margin = 20;
-            const lineHeight = 7;
-            let yPosition = margin;
-            
-            // Helper function to check page break
-            function checkPageBreak(neededSpace) {
-                if (yPosition + neededSpace > pageHeight - margin - 10) {
-                    doc.addPage();
-                    yPosition = margin;
-                    addPageHeader();
-                }
+            // Create the HTML content for the PDF
+            const pdfHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StartupStage Diagnostic Report - Growth Analysis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        @page {
+            size: A4;
+            margin: 0;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: #050310;
+            background: white;
+            line-height: 1.6;
+            print-color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+        
+        .page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 20mm 20mm 25mm 20mm;
+            margin: 0 auto;
+            background: white;
+            position: relative;
+        }
+        
+        .page::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(143, 90, 243, 0.03) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .company-name {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+        
+        .tagline {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #999;
+            font-weight: 600;
+            margin-top: 0.25rem;
+        }
+        
+        .metadata {
+            text-align: right;
+            font-size: 0.85rem;
+            color: #999;
+        }
+        
+        .diagnosis-card {
+            background: #fafafa;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin: 3rem 0;
+            position: relative;
+        }
+        
+        .diagnosis-badge {
+            display: inline-block;
+            background: #050310;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .diagnosis-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #050310;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .diagnosis-description {
+            font-size: 1.1rem;
+            color: #444;
+            line-height: 1.7;
+        }
+        
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .metric-card {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+        }
+        
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+        
+        .metric-label {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .metric-context {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 0.5rem;
+        }
+        
+        .findings-section {
+            margin: 3rem 0;
+        }
+        
+        .section-header {
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            color: #050310;
+        }
+        
+        .finding-card {
+            background: #fafafa;
+            border-left: 4px solid #8F5AF3;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            position: relative;
+            padding-left: 3rem;
+        }
+        
+        .finding-number {
+            position: absolute;
+            left: 1rem;
+            top: 1.5rem;
+            width: 28px;
+            height: 28px;
+            background: #8F5AF3;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        
+        .finding-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #050310;
+        }
+        
+        .finding-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        
+        .finding-stat {
+            display: inline-block;
+            background: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #8F5AF3;
+            border: 1px solid #e5e5e5;
+            margin-right: 0.5rem;
+        }
+        
+        .implementation-box {
+            background: #f8f8f8;
+            border: 1px solid #e5e5e5;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .implementation-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #050310;
+        }
+        
+        .implementation-timeline {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+        
+        .implementation-meta {
+            font-size: 0.9rem;
+            color: #666;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e5e5;
+        }
+        
+        .cta-section {
+            margin-top: 3rem;
+            padding: 2.5rem;
+            background: #fafafa;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .cta-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: #050310;
+            font-weight: 700;
+        }
+        
+        .cta-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .cta-meta {
+            font-size: 0.85rem;
+            color: #999;
+            margin-top: 1.5rem;
+        }
+        
+        .footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 20mm;
+            right: 20mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .footer-brand {
+            font-weight: 700;
+            color: #8F5AF3;
+        }
+        
+        @media screen {
+            body {
+                background: #f5f5f5;
+                padding: 20px;
             }
             
-            // Helper function to add page header
-            function addPageHeader() {
-                doc.setFillColor(...purple);
-                doc.rect(0, 0, pageWidth, 3, 'F');
-                doc.setFillColor(...pink);
-                doc.rect(0, 3, pageWidth, 1, 'F');
+            .page {
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            }
+        }
+        
+        @media print {
+            body {
+                background: white;
             }
             
-            // Add header gradient bars
-            addPageHeader();
-            
-            // Title section with dark background
-            doc.setFillColor(...darkBg);
-            doc.rect(0, 10, pageWidth, 40, 'F');
-            
-            // Logo/Brand
-            doc.setTextColor(...textLight);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(24);
-            doc.text('StartupStage', margin, 25);
-            
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            doc.setTextColor(...textMuted);
-            doc.text('GROWTH DIAGNOSTIC - IMPLEMENTATION GUIDE', margin, 32);
-            
-            // Add tagline
-            doc.setFontSize(8);
-            doc.text('The Anti-Accelerator', margin, 37);
-            
-            // Date
-            doc.setFontSize(9);
-            doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - margin - 35, 32);
-            
-            yPosition = 60;
-            
-            // Diagnosis Badge
-            doc.setFillColor(...darkBg);
-            doc.roundedRect(margin, yPosition, 50, 10, 3, 3, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(9);
-            doc.text(badge, margin + 25, yPosition + 6.5, { align: 'center' });
-            yPosition += 15;
-            
-            // Diagnosis header
-            doc.setTextColor(...purple);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(18);
-            const titleLines = doc.splitTextToSize(bottleneck, pageWidth - (margin * 2));
-            doc.text(titleLines, margin, yPosition);
-            yPosition += titleLines.length * 8;
-            
-            // Description
-            doc.setTextColor(100, 100, 100);
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(11);
-            const descLines = doc.splitTextToSize(description, pageWidth - (margin * 2));
-            doc.text(descLines, margin, yPosition);
-            yPosition += descLines.length * 5 + 5;
-            
-            // Impact box with gradient background
-            doc.setFillColor(243, 240, 255);
-            doc.roundedRect(margin, yPosition, pageWidth - (margin * 2), 20, 3, 3, 'F');
-            doc.setTextColor(...purple);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10);
-            doc.text('POTENTIAL MONTHLY IMPACT:', margin + 5, yPosition + 7);
-            doc.setFontSize(14);
-            doc.text(impact, margin + 5, yPosition + 15);
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Based on similar companies at your stage', pageWidth - margin - 5, yPosition + 15, { align: 'right' });
-            yPosition += 25;
-            
-            // Key Issues Header
-            doc.setTextColor(50, 50, 50);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(14);
-            doc.text('KEY ISSUES IDENTIFIED:', margin, yPosition);
-            yPosition += 10;
-            
-            // Add symptoms with better formatting
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            const symptoms = document.querySelectorAll('.symptom-item');
-            symptoms.forEach((symptom, index) => {
-                const title = symptom.querySelector('.symptom-title').textContent;
-                const desc = symptom.querySelector('div:last-child').textContent;
-                
-                checkPageBreak(25);
-                
-                // Draw symptom number circle
-                doc.setFillColor(...purple);
-                doc.circle(margin + 3, yPosition - 2, 3, 'F');
-                doc.setTextColor(255, 255, 255);
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(8);
-                doc.text((index + 1).toString(), margin + 3, yPosition, { align: 'center' });
-                
-                // Symptom title
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(11);
-                doc.setTextColor(...purple);
-                doc.text(title, margin + 10, yPosition);
-                yPosition += 6;
-                
-                // Symptom description
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(9);
-                doc.setTextColor(80, 80, 80);
-                const symptomLines = doc.splitTextToSize(desc, pageWidth - (margin * 2) - 10);
-                doc.text(symptomLines, margin + 10, yPosition);
-                yPosition += symptomLines.length * 4 + 8;
-            });
-            
-            // Add page break before implementation plan
-            doc.addPage();
-            addPageHeader();
-            yPosition = margin;
-            
-            // Implementation Plan Header
-            doc.setFillColor(...purple);
-            doc.rect(margin, yPosition, pageWidth - (margin * 2), 12, 'F');
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(14);
-            doc.text('14-DAY IMPLEMENTATION PLAN', margin + 5, yPosition + 8);
-            yPosition += 20;
-            
-            // Time investment box
-            doc.setFillColor(243, 240, 255);
-            doc.roundedRect(margin, yPosition, pageWidth - (margin * 2), 15, 3, 3, 'F');
-            doc.setTextColor(...purple);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10);
-            doc.text('Total Time Investment: 25-30 hours over 14 days', margin + 5, yPosition + 6);
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Average 2 hours per day', margin + 5, yPosition + 11);
-            yPosition += 20;
-            
-            // Get implementation content based on bottleneck type
-            let implementationContent = '';
-            if (bottleneckType === 'pricing') {
-                implementationContent = getPricingImplementation();
-            } else if (bottleneckType === 'retention') {
-                implementationContent = getRetentionImplementation();
-            } else if (bottleneckType === 'acquisition') {
-                implementationContent = getAcquisitionImplementation();
-            } else if (bottleneckType === 'operations') {
-                implementationContent = getOperationsImplementation();
-            } else {
-                implementationContent = getPMFImplementation();
+            .page {
+                margin: 0;
+                box-shadow: none;
             }
-            
-            // Parse and format implementation content
-            const sections = implementationContent.split('\n\n');
-            
-            sections.forEach(section => {
-                const lines = section.split('\n');
-                
-                lines.forEach(line => {
-                    if (!line.trim()) return;
-                    
-                    // Check for section headers (all caps or with ====)
-                    if (line.includes('====') || line.includes('----')) {
-                        return; // Skip separator lines
-                    } else if (line === line.toUpperCase() && line.length > 10) {
-                        // Major section header
-                        checkPageBreak(15);
-                        doc.setFont('helvetica', 'bold');
-                        doc.setFontSize(12);
-                        doc.setTextColor(...purple);
-                        doc.text(line, margin, yPosition);
-                        yPosition += 8;
-                    } else if (line.startsWith('DAYS ') || line.startsWith('Days ')) {
-                        // Day headers
-                        checkPageBreak(15);
-                        doc.setFillColor(240, 235, 255);
-                        doc.roundedRect(margin, yPosition - 5, pageWidth - (margin * 2), 10, 2, 2, 'F');
-                        doc.setFont('helvetica', 'bold');
-                        doc.setFontSize(11);
-                        doc.setTextColor(...purple);
-                        doc.text(line, margin + 3, yPosition);
-                        yPosition += 8;
-                    } else if (line.startsWith('[ ]')) {
-                        // Task items
-                        checkPageBreak(8);
-                        doc.setFont('helvetica', 'normal');
-                        doc.setFontSize(9);
-                        doc.setTextColor(50, 50, 50);
-                        
-                        // Add checkbox
-                        doc.rect(margin + 2, yPosition - 3, 3, 3);
-                        
-                        // Add task text
-                        const taskText = line.substring(3).trim();
-                        const taskLines = doc.splitTextToSize(taskText, pageWidth - (margin * 2) - 10);
-                        doc.text(taskLines, margin + 8, yPosition);
-                        yPosition += taskLines.length * 4 + 2;
-                    } else if (line.match(/^[A-Z][A-Z\s]+:/)) {
-                        // Sub-headers (e.g., "BEST PRACTICE:", "HOW TO:")
-                        checkPageBreak(8);
-                        doc.setFont('helvetica', 'bold');
-                        doc.setFontSize(9);
-                        doc.setTextColor(...purple);
-                        doc.text(line, margin + 5, yPosition);
-                        yPosition += 5;
-                    } else if (line.startsWith('    ')) {
-                        // Indented content
-                        checkPageBreak(6);
-                        doc.setFont('helvetica', 'normal');
-                        doc.setFontSize(9);
-                        doc.setTextColor(80, 80, 80);
-                        const indentedLines = doc.splitTextToSize(line.trim(), pageWidth - (margin * 2) - 15);
-                        doc.text(indentedLines, margin + 10, yPosition);
-                        yPosition += indentedLines.length * 4 + 1;
-                    } else {
-                        // Regular text
-                        checkPageBreak(6);
-                        doc.setFont('helvetica', 'normal');
-                        doc.setFontSize(9);
-                        doc.setTextColor(60, 60, 60);
-                        const textLines = doc.splitTextToSize(line, pageWidth - (margin * 2) - 5);
-                        doc.text(textLines, margin + 5, yPosition);
-                        yPosition += textLines.length * 4 + 1;
-                    }
-                });
-                
-                yPosition += 3; // Space between sections
-            });
-            
-            // Add final CTA page
-            doc.addPage();
-            addPageHeader();
-            yPosition = pageHeight / 3;
-            
-            // CTA Box
-            doc.setFillColor(...darkBg);
-            doc.rect(margin, yPosition - 10, pageWidth - (margin * 2), 80, 'F');
-            
-            doc.setTextColor(...textLight);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(16);
-            doc.text('NEED HELP IMPLEMENTING THIS PLAN?', pageWidth / 2, yPosition, { align: 'center' });
-            
-            yPosition += 12;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(11);
-            doc.setTextColor(...textMuted);
-            doc.text('StartupStage members get:', pageWidth / 2, yPosition, { align: 'center' });
-            
-            yPosition += 8;
-            const benefits = [
-                '• Monthly 1-on-1 calls with experienced founders',
-                '• Access to 20+ fractional C-suite experts',
-                '• Weekly implementation workshops',
-                '• Private community of serious founders',
-                '• 0% equity taken - forever'
-            ];
-            
-            doc.setFontSize(10);
-            benefits.forEach(benefit => {
-                doc.text(benefit, pageWidth / 2, yPosition, { align: 'center' });
-                yPosition += 5;
-            });
-            
-            yPosition += 5;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.setTextColor(...purple);
-            doc.text('Just $199/month • No equity • Cancel anytime', pageWidth / 2, yPosition, { align: 'center' });
-            
-            yPosition += 10;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            doc.setTextColor(...textMuted);
-            doc.text('Schedule your included expert call:', pageWidth / 2, yPosition, { align: 'center' });
-            yPosition += 5;
-            doc.setTextColor(...pink);
-            doc.textWithLink('cal.com/startupstage/get-unstuck-1-on-1-founder-call', pageWidth / 2, yPosition, {
-                url: 'https://cal.com/startupstage/get-unstuck-1-on-1-founder-call',
-                align: 'center'
-            });
-            
-            yPosition += 10;
-            doc.setTextColor(...textMuted);
-            doc.text('Join StartupStage:', pageWidth / 2, yPosition, { align: 'center' });
-            yPosition += 5;
-            doc.setTextColor(...pink);
-            doc.textWithLink('startupstage.com/join', pageWidth / 2, yPosition, {
-                url: 'https://startupstage.com/join',
-                align: 'center'
-            });
-            
-            // Add footer
-            yPosition = pageHeight - 15;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(150, 150, 150);
-            doc.text('© 2025 StartupStage | The Anti-Accelerator | 0% Equity Forever', pageWidth / 2, yPosition, { align: 'center' });
-            
-            // Save the PDF
-            doc.save('startupstage-growth-diagnostic.pdf');
         }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <div class="content">
+            <!-- Header -->
+            <div class="header">
+                <div>
+                    <div class="company-name">StartupStage</div>
+                    <div class="tagline">The Anti-Accelerator</div>
+                </div>
+                <div class="metadata">
+                    <div><strong>Growth Diagnostic Report</strong></div>
+                    <div>${new Date().toLocaleDateString()}</div>
+                </div>
+            </div>
+            
+            <!-- Executive Summary -->
+            <div class="diagnosis-card">
+                <span class="diagnosis-badge">${currentDiagnosis.badge}</span>
+                <h1 class="diagnosis-title">${currentDiagnosis.title}</h1>
+                <p class="diagnosis-description">
+                    ${currentDiagnosis.description}
+                </p>
+            </div>
+            
+            <!-- Impact Metrics -->
+            <div class="impact-grid">
+                <div class="metric-card">
+                    <div class="metric-value">${currentDiagnosis.impact}</div>
+                    <div class="metric-label">Monthly Revenue Impact</div>
+                    <div class="metric-context">Based on your current MRR</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">14 Days</div>
+                    <div class="metric-label">Implementation Time</div>
+                    <div class="metric-context">25-30 hours total</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">90 Days</div>
+                    <div class="metric-label">To See Results</div>
+                    <div class="metric-context">Based on similar companies</div>
+                </div>
+            </div>
+            
+            <!-- Key Findings -->
+            <div class="findings-section">
+                <h2 class="section-header">Critical Issues Discovered</h2>
+                ${currentDiagnosis.symptoms.map((symptom, index) => `
+                    <div class="finding-card">
+                        <div class="finding-number">${index + 1}</div>
+                        <h3 class="finding-title">${symptom.title}</h3>
+                        <p class="finding-description">
+                            ${symptom.description}
+                        </p>
+                    </div>
+                `).join('')}
+            </div>
+            
+            <!-- Implementation Roadmap -->
+            <div class="implementation-box">
+                <h3 class="implementation-title">Your 14-Day Implementation Roadmap</h3>
+                <div class="implementation-timeline">
+                    ${currentDiagnosis.plan.map(phase => `
+                        <strong>${phase.day}:</strong> ${phase.time}<br>
+                    `).join('')}
+                </div>
+                <div class="implementation-meta">
+                    Total time investment: 25-30 hours over 14 days<br>
+                    Expected ROI: Significant improvement within 90 days
+                </div>
+            </div>
+            
+            <!-- CTA Section -->
+            <div class="cta-section">
+                <h3 class="cta-title">Need Help Implementing This Plan?</h3>
+                <p class="cta-description">
+                    StartupStage members get direct implementation support from founders who've solved these exact problems.<br>
+                    No equity required. Just $199/month.
+                </p>
+                <div style="margin: 1.5rem 0; padding: 1rem; background: white; border-radius: 8px; border: 2px solid #8F5AF3;">
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Schedule Your Implementation Call:</p>
+                    <p style="font-size: 1.1rem; color: #8F5AF3; font-weight: 700; word-break: break-all;">
+                        cal.com/startupstage/get-unstuck-1-on-1-founder-call
+                    </p>
+                </div>
+                <p class="cta-meta">
+                    30-day money-back guarantee • Cancel anytime • 0% equity forever
+                </p>
+            </div>
+        </div>
         
-        // Implementation content functions remain the same
-        function getPricingImplementation() {
-            return `DAYS 1-3: PRICE DISCOVERY & RESEARCH
-=====================================
-Time: 6 hours total (2 hours per day)
-
-[ ] Call 5 customers: "What value do you get from our product?"
-    BEST PRACTICE: Schedule 30-min calls, not emails. You need to hear their tone.
-    SCRIPT: "Hi [Name], I'm doing customer research to improve our product. 
-    Can you help me understand what specific value you get from [product]?
-    What would happen if you couldn't use it anymore?"
-    LISTEN FOR: Specific metrics they mention, emotional responses, alternative solutions
-
-[ ] Research 3 competitors' pricing pages
-    HOW TO: Use archive.org to see their pricing evolution over time
-    LOOK FOR: Price points, tier names, feature differentiation, annual discounts
-    DOCUMENT: Create a spreadsheet with columns for Company, Tiers, Prices, Key Features
-    TOOLS: Use similarweb.com to estimate their traffic/size
-
-[ ] Calculate your true cost per customer
-    FORMULA: (All monthly costs) / (Number of active customers)
-    INCLUDE: Hosting, tools, support time (your hourly rate × hours), payment processing
-    DON'T FORGET: Hidden costs like customer acquisition cost, onboarding time
-
-[ ] Document which features customers actually use
-    HOW TO: Check your analytics/database for feature usage in last 30 days
-    80/20 RULE: You'll likely find 20% of features get 80% of usage
-    ACTION: List features by usage frequency, note which paying tiers use what
-
-
-DAYS 4-7: TEST & IMPLEMENT NEW PRICING
-=======================================
-Time: 8 hours total
-
-[ ] Raise prices 20% for NEW customers only
-    DO: Grandfather existing customers at current rate (builds loyalty)
-    DON'T: Announce the increase publicly or apologize for pricing
-    MESSAGING: Focus on value, not cost. "Investment" not "price"
-    EXAMPLE: If you charge $49, new price is $59. Round to $60 for cleaner number.
-
-[ ] Create one premium tier with 2x pricing
-    NAMING: Use aspirational names (Professional → Enterprise, not Basic → Premium)
-    FEATURES: Add 3-5 features only valuable to power users:
-      - Priority support (same support, just faster response promise)
-      - Advanced analytics/reporting (often just different data views)
-      - Higher limits (10x current, costs you nothing if unused)
-      - Custom onboarding (one 30-min call)
-      - Quarterly business reviews (one email)
-    POSITIONING: "For teams serious about [outcome]"
-
-[ ] Design a services package ($2-5K one-time)
-    OPTIONS:
-    1. "Quick Start" Implementation - $2,500
-       - 2 hour kickoff call
-       - Custom setup and configuration
-       - 30 days of priority support
-       - Recording of setup for team training
-    
-    2. "Full Migration" Service - $5,000
-       - Complete data migration from competitor
-       - Custom integrations setup
-       - Team training workshop (virtual)
-       - 90 days priority support
-
-    DELIVERY: You can outsource to Upwork/Fiverr after documenting process
-
-[ ] Update website with new pricing
-    PSYCHOLOGY: Put premium tier in middle (makes it look like best value)
-    HIGHLIGHT: "Most Popular" badge on tier you want them to choose
-    ADD: "Save 20%" banner on annual pricing toggle
-    URGENCY: "Prices increasing soon" or "Grandfather rate available"
-
-
-DAYS 8-14: EXPAND REVENUE STREAMS
-==================================
-Time: 10 hours total
-
-[ ] Launch annual plans (2 months free = 17% discount)
-    EMAIL TEMPLATE:
-    "Subject: Lock in your rate forever (ends Friday)
-    
-    Hi [Name],
-    
-    Quick note - we're raising prices next month for new customers.
-    
-    But you can lock in your current rate forever by switching to annual.
-    Plus you'll save 2 months (worth $[amount]).
-    
-    [Button: Switch to Annual - Save $X]
-    
-    This rate is guaranteed as long as you stay subscribed.
-    
-    -[Your name]"
-    
-    TIMING: Send Tuesday 10am in customer's timezone
-    FOLLOW-UP: Thursday if no response
-
-[ ] Email top 20% of customers about premium tier
-    IDENTIFY: Customers who log in most, use most features, or pay on time
-    SUBJECT LINES TO TEST:
-    - "You're invited to our new [Premium] tier"
-    - "[Name], you qualify for advanced features"
-    - "Exclusive upgrade for our power users"
-    
-    OFFER: 20% off first 3 months of premium to make switching easier
-
-[ ] Track acceptance rates daily
-    METRICS: Create simple spreadsheet with:
-    - Date
-    - # Trials Started
-    - # Converted to Paid
-    - # Upgraded to Premium
-    - # Switched to Annual
-    
-    TARGET: >80% accept new pricing = room to increase more
-    WARNING: <60% acceptance = gather feedback before continuing
-
-[ ] Plan next price increase if >80% accept
-    TIMELINE: Wait 6 months minimum between increases
-    AMOUNT: 15-20% each time
-    COMMUNICATION: Always grandfather existing customers`;
-        }
-        
-        function getRetentionImplementation() {
-            return `DAYS 1-3: DIAGNOSE WHY CUSTOMERS LEAVE
-========================================
-Time: 8 hours total
-
-[ ] Export list of churned customers from last 60 days
-    TOOLS: Your payment processor (Stripe/PayPal) or subscription manager
-    DATA TO CAPTURE: Name, email, signup date, cancel date, total paid, last login
-    SEGMENT BY: Time to churn (under 30 days, 30-90 days, 90+ days)
-    PATTERN RECOGNITION: Look for commonalities in churned customers
-
-[ ] Email 10 churned users for 15-min calls
-    SUBJECT: "Quick question about why you left [Product]"
-    
-    EMAIL TEMPLATE:
-    "Hi [Name],
-    
-    I noticed you cancelled [Product] recently. I completely respect your decision.
-    
-    I'm trying to improve the product for future customers. Would you be open to 
-    a quick 15-min call to share what didn't work for you?
-    
-    As a thank you, I'll send you a $25 Amazon gift card.
-    
-    [Calendar link]
-    
-    No sales pitch, promise. Just want to learn.
-    
-    -[Your name]"
-    
-    QUESTIONS TO ASK:
-    1. What made you initially sign up?
-    2. When did you realize it wasn't working?
-    3. What specific moment made you decide to cancel?
-    4. What are you using instead now?
-    5. What would have kept you as a customer?
-
-[ ] Analyze usage data before churn
-    LOOK FOR: Last login, feature usage decline, support tickets
-    RED FLAGS: 
-    - No login in 14+ days
-    - Sudden drop in usage
-    - Unresolved support ticket
-    - Failed payment attempts
-    CREATE: "Churn risk score" based on these signals
-
-[ ] Identify top 3 churn triggers
-    COMMON TRIGGERS:
-    - Never reached "aha moment" (didn't see value)
-    - Too complex to set up
-    - Missing key feature they needed
-    - Price vs value mismatch
-    - Found better alternative
-    - Business need changed
-
-
-DAYS 4-7: FIX YOUR ONBOARDING
-==============================
-Time: 10 hours total
-
-[ ] Map your current onboarding flow
-    DOCUMENT: Every step from signup to first value
-    TIME IT: How long until they see value?
-    COUNT: How many clicks/steps required?
-    TEST: Sign up as new user yourself (use incognito)
-
-[ ] Identify where users get stuck
-    ANALYTICS: Check where users drop off in the flow
-    COMMON STICKING POINTS:
-    - Too many fields in signup
-    - Unclear next steps after signup
-    - Feature overwhelm
-    - No quick win
-
-[ ] Create 3 onboarding emails for new users
-    
-    EMAIL 1 - IMMEDIATELY AFTER SIGNUP:
-    Subject: "Your account is ready! (start here)"
-    - Welcome them by name
-    - One clear action to take
-    - Link to 2-min video showing quick win
-    - Your personal email for questions
-    
-    EMAIL 2 - DAY 3:
-    Subject: "Most people miss this feature..."
-    - Highlight underused but valuable feature
-    - Show specific use case
-    - Include screenshot/GIF
-    - "Reply if you need help"
-    
-    EMAIL 3 - DAY 7:
-    Subject: "[Name], quick check-in"
-    - Ask how it's going
-    - Share success story from similar customer
-    - Offer 15-min setup call
-    - Reminder of value prop
-
-[ ] Add progress bar to setup process
-    IMPLEMENTATION: Show "Setup: 40% complete"
-    GAMIFICATION: ✓ checkmarks for completed steps
-    MOTIVATION: "Just 2 more steps to go!"
-    CELEBRATION: Confetti animation when done
-
-
-DAYS 8-14: BUILD ENGAGEMENT SYSTEMS
-====================================
-Time: 8 hours total
-
-[ ] Set up weekly check-in emails
-    SEGMENT USERS:
-    - Power users: Feature announcements, advanced tips
-    - Regular users: Use case examples, best practices
-    - Low engagement: Re-engagement campaigns
-    
-    TEMPLATE FOR LOW ENGAGEMENT:
-    Subject: "You haven't used [key feature] yet"
-    
-    "Hi [Name],
-    
-    I noticed you haven't tried [specific feature] yet.
-    
-    Here's why it matters: [specific benefit]
-    
-    [Customer name] used it to [specific result].
-    
-    Takes 2 minutes to set up: [direct link]
-    
-    -[Your name]
-    
-    P.S. Need help? Just reply to this email."
-
-[ ] Create re-engagement campaign for dormant users
-    TRIGGER: No login in 7 days
-    
-    SEQUENCE:
-    Day 7: "We miss you" - what's new
-    Day 14: "Quick question" - ask for feedback
-    Day 21: Case study of success
-    Day 28: "Should we pause your account?"
-    Day 30: Final value reminder
-    
-    OFFER: "Come back" incentive (free month, upgrade, training)
-
-[ ] Launch "office hours" for struggling customers
-    FORMAT: Weekly 30-min group Zoom call
-    TIME: Test Tuesdays 2pm ET and Thursdays 11am ET
-    PROMOTE: Email struggling segments
-    TOPICS: Live Q&A, specific tutorials, success strategies
-    RECORD: Post recordings for those who miss
-
-[ ] Implement usage-based upgrade prompts
-    TRIGGERS:
-    - Hit 80% of plan limit
-    - Used premium feature 3x (in trial)
-    - Added team members
-    - High engagement score
-    
-    IN-APP MESSAGE:
-    "You're using [Product] like a pro! 
-    Unlock [specific features] with [Premium Plan]
-    [Upgrade Now] [Remind Me Later]"`;
-        }
-        
-        function getAcquisitionImplementation() {
-            return `DAYS 1-3: ANALYZE YOUR FUNNEL
-==============================
-Time: 6 hours total
-
-[ ] List all current traffic sources
-    WHERE TO FIND: Google Analytics, your analytics tool
-    DOCUMENT: Source, monthly visitors, conversion rate, CAC
-    CALCULATE: Revenue per source (to find hidden winners)
-    IDENTIFY: Your #1 performing source by ROI, not volume
-
-[ ] Calculate CAC for each channel
-    FORMULA: (Channel spend + time cost) / (customers from channel)
-    TIME COST: Your hourly rate × hours on that channel
-    COMPARE: CAC vs customer lifetime value (LTV)
-    TARGET: LTV:CAC ratio should be 3:1 minimum
-
-[ ] Identify your #1 performing channel
-    BEST = Lowest CAC + highest quality customers
-    QUALITY SIGNALS: Lower churn, higher LTV, faster conversion
-    DOCUMENT: What exactly works in this channel
-
-[ ] Document your sales process end-to-end
-    MAP: Every touchpoint from awareness to purchase
-    TIME: How long from first touch to close?
-    STEPS: Count every interaction required
-    FRICTION: Where do people drop off?
-
-
-DAYS 4-7: OPTIMIZE YOUR BEST CHANNEL
-=====================================
-Time: 10 hours total
-
-[ ] Double down on best channel
-    INCREASE: Budget/time by 50% immediately
-    TEST: Can it scale or does quality drop?
-    DOCUMENT: Daily metrics as you scale
-    AUTOMATE: What parts can tools handle?
-
-[ ] A/B test 3 new headlines/messages
-    WHERE: Landing pages, ads, emails
-    
-    HEADLINE FORMULAS TO TEST:
-    1. How to [achieve desire] without [pain point]
-       "How to scale to $100K MRR without giving up equity"
-    
-    2. [Number] ways to [achieve outcome]
-       "5 ways to double revenue without raising prices"
-    
-    3. The [adjective] guide to [outcome]
-       "The zero-equity guide to scaling your startup"
-    
-    TEST ONE VARIABLE: Don't change multiple things at once
-    STATISTICAL SIGNIFICANCE: Need 100+ conversions per variant
-
-[ ] Improve landing page conversion
-    ABOVE THE FOLD MUST-HAVES:
-    - Clear headline (what you do)
-    - Subheadline (for whom and why)
-    - One clear CTA button
-    - Social proof (logos or testimonial)
-    - Visual (screenshot, video, or demo)
-    
-    PSYCHOLOGY TRIGGERS:
-    - Urgency: "Join 347 founders who..."
-    - Authority: "As featured in..."
-    - Social proof: Customer logos/testimonials
-    - Scarcity: "Only accepting 10 new members"
-    
-    REMOVE: Navigation menu, multiple CTAs, walls of text
-
-[ ] Set up proper conversion tracking
-    GOOGLE ANALYTICS: Set up goals for:
-    - Newsletter signups
-    - Trial starts
-    - Paid conversions
-    - Feature usage
-    
-    UTM PARAMETERS: Add to every link:
-    - utm_source (where from)
-    - utm_medium (type of link)  
-    - utm_campaign (specific campaign)
-    
-    FACEBOOK PIXEL: Track visitor actions for retargeting
-    HEATMAPS: Use Hotjar/Clarity to see user behavior
-
-
-DAYS 8-14: SCALE WHAT WORKS
-============================
-Time: 12 hours total
-
-[ ] Increase budget on winning channel by 50%
-    GRADUAL: Increase 10% daily to maintain quality
-    MONITOR: CAC and conversion rates daily
-    PAUSE IF: CAC increases by >30% or quality drops
-
-[ ] Create 5 pieces of content for that channel
-    
-    LINKEDIN CONTENT IDEAS:
-    - Contrarian take on industry norm
-    - Breakdown of your process
-    - Customer success story
-    - Lessons learned from failure
-    - Data/insights your audience lacks
-    
-    GOOGLE ADS COPY:
-    - Address specific pain points
-    - Include numbers/specifics
-    - Clear CTA in headline
-    - Use all available extensions
-    
-    EMAIL TEMPLATES:
-    - Problem/solution/proof/CTA structure
-    - Subject lines under 50 characters
-    - One clear CTA per email
-    - PS line with secondary value
-
-[ ] Test one new similar channel
-    IF GOOGLE ADS WORK: Try Bing ads (cheaper, less competition)
-    IF LINKEDIN WORKS: Try Twitter ads (similar B2B audience)
-    IF CONTENT WORKS: Try podcast guesting (same effort, new audience)
-    IF EMAIL WORKS: Try LinkedIn outreach (similar personal touch)
-
-[ ] Document playbook for repeatable execution
-    CREATE: Step-by-step guide for what worked
-    INCLUDE: Templates, examples, metrics
-    TIME: How long each step takes
-    TOOLS: Exactly what you used
-    RESULTS: What to expect at each stage`;
-        }
-        
-        function getOperationsImplementation() {
-            return `DAYS 1-3: TIME AND TASK AUDIT
-==============================
-Time: 4 hours total
-
-[ ] Track every task for 3 days
-    USE: Simple spreadsheet or Toggl
-    COLUMNS: Task, Time Spent, Category, Could be Automated/Delegated?
-    CATEGORIES: Sales, Marketing, Product, Support, Admin
-    BE HONEST: Include "checking email" and "thinking time"
-
-[ ] Identify top 5 time wasters
-    USUAL SUSPECTS:
-    - Email (checking too frequently)
-    - Meetings without agendas
-    - Context switching
-    - Manual data entry
-    - Repetitive customer support
-    - Social media "research"
-    
-    CALCULATE: Hours per week on each
-
-[ ] List all tools you're currently using
-    DOCUMENT: Tool name, cost, purpose, usage frequency
-    IDENTIFY: Overlapping tools doing same thing
-    CALCULATE: Total monthly tool cost
-    QUESTION: Which could you live without?
-
-[ ] Find 3 tasks you can eliminate immediately
-    ASK: What happens if I just... don't do this?
-    80/20 RULE: 20% of tasks drive 80% of results
-    EXAMPLES: 
-    - Daily reports nobody reads
-    - Meetings without clear outcomes
-    - Perfectionist tweaks
-    - Vanity metrics tracking
-
-
-DAYS 4-7: AUTOMATE THE BASICS
-==============================
-Time: 8 hours total
-
-[ ] Set up email templates for common responses
-    CREATE TEMPLATES FOR:
-    - Pricing questions
-    - Feature requests
-    - Onboarding welcome
-    - Payment failures
-    - Cancellation attempts
-    - Support tickets
-    
-    GMAIL: Settings → Advanced → Templates
-    OUTLOOK: Quick Parts feature
-    HELP SCOUT: Saved replies
-    
-    TEMPLATE EXAMPLE:
-    "Hi [Name],
-    
-    Thanks for asking about our pricing!
-    
-    We have three plans:
-    [Insert pricing table]
-    
-    Most companies like yours choose [recommended plan] because [reason].
-    
-    You can start with a free trial here: [link]
-    
-    Any other questions? Just reply to this email.
-    
-    -[Your name]"
-
-[ ] Automate invoice and payment collection
-    STRIPE: Set up automatic invoicing and payment retry
-    RECURRING BILLING: Use subscription management tool
-    DUNNING EMAILS: Automatic payment failure sequences
-    LATE PAYMENT: Automatic reminders at 3, 7, 14 days
-
-[ ] Create SOPs for repetitive tasks
-    FORMAT: Step-by-step with screenshots
-    TOOLS: Loom for video SOPs, Notion for written
-    
-    SOP TEMPLATE:
-    1. Task Name & Frequency
-    2. Time Required
-    3. Tools Needed
-    4. Step-by-Step Process
-    5. Common Issues & Solutions
-    6. Quality Checklist
-    
-    PRIORITIZE SOPS FOR:
-    - Customer onboarding
-    - Content publishing
-    - Invoice processing
-    - Support ticket handling
-    - Social media posting
-
-[ ] Implement basic Zapier workflows
-    
-    STARTER ZAPS (FREE TIER):
-    1. Form submission → Slack notification → Google Sheet
-    2. New customer → Welcome email → CRM entry
-    3. Support ticket → Team notification → Tracking sheet
-    4. Social mention → Slack alert → Response tracking
-    5. Payment received → Thank you email → Accounting sheet
-    
-    TIME SAVED: Each Zap saves 5-15 min per trigger
-
-
-DAYS 8-14: SYSTEMS AND DELEGATION
-==================================
-Time: 10 hours total
-
-[ ] Hire VA for 5 hours/week ($15-25/hour)
-    
-    WHERE TO HIRE:
-    - Upwork (global talent)
-    - Belay (US-based, prescreened)
-    - Time Etc (UK/US experienced)
-    - OnlineJobs.ph (Philippines, great value)
-    
-    TASKS TO DELEGATE:
-    - Email inbox management
-    - Calendar scheduling
-    - Data entry and reporting
-    - Social media posting
-    - Research tasks
-    - Customer support (level 1)
-    
-    ONBOARDING PROCESS:
-    Day 1: Share SOPs and Loom videos
-    Day 2: Shadow you doing tasks
-    Day 3: Do tasks with supervision
-    Day 4: Do tasks with review
-    Day 5: Independent work
-    
-    MANAGEMENT TIPS:
-    - Daily check-in first week
-    - Weekly check-in after that
-    - Use time tracking tool
-    - Create shared task list
-    - Record Loom feedback
-
-[ ] Document your core processes
-    THE BIG 5 TO DOCUMENT:
-    1. Sales process (lead → customer)
-    2. Onboarding process (signup → active)
-    3. Support process (ticket → resolution)
-    4. Content process (idea → published)
-    5. Product process (feature request → shipped)
-    
-    DOCUMENTATION TOOLS:
-    - Notion (free, flexible)
-    - Confluence (robust, integrated)
-    - Google Docs (simple, shareable)
-    - Loom (video walkthroughs)
-
-[ ] Set up project management system
-    
-    TOOL OPTIONS:
-    - Trello (visual, simple) - Free
-    - Asana (comprehensive) - Free for 15 users
-    - ClickUp (all-in-one) - Free tier available
-    - Notion (flexible) - Free for personal
-    
-    BOARD STRUCTURE:
-    - Backlog (ideas)
-    - To Do (committed)
-    - In Progress (working on)
-    - Review (needs approval)
-    - Done (completed)
-    
-    WEEKLY PLANNING:
-    - Monday: Review last week, plan this week
-    - Daily: Move cards, update status
-    - Friday: Clean up board, celebrate wins
-
-[ ] Create weekly dashboard for key metrics
-    
-    ONE-PAGE DASHBOARD INCLUDES:
-    - Revenue (MRR, growth rate)
-    - Customers (new, churned, total)
-    - Usage (DAU, key feature adoption)
-    - Pipeline (leads, trials, close rate)
-    - Operations (support tickets, response time)
-    
-    TOOLS:
-    - Google Sheets (free, flexible)
-    - Databox (pulls from all tools)
-    - Geckoboard (visual displays)
-    - Klipfolio (advanced analytics)
-    
-    UPDATE FREQUENCY:
-    - Revenue: Daily
-    - Customers: Daily
-    - Usage: Weekly
-    - Pipeline: Weekly
-    - Operations: Daily`;
-        }
-        
-        function getPMFImplementation() {
-            return `DAYS 1-3: DEEP CUSTOMER DISCOVERY
-==================================
-Time: 10 hours total
-
-[ ] Interview 10 customers about their #1 problem
-    
-    RECRUITING EMAIL:
-    "Subject: 15 min chat - $25 Amazon card
-    
-    Hi [Name],
-    
-    I'm researching how to make [Product] better for customers like you.
-    
-    Would you have 15 minutes this week for a quick call?
-    I'll send you a $25 Amazon gift card as a thank you.
-    
-    [Calendar link]
-    
-    -[Your name]"
-    
-    THE MOM TEST QUESTIONS:
-    1. "Tell me about the last time you faced [problem]"
-    2. "What did you try to solve it?"
-    3. "What was frustrating about those solutions?"
-    4. "How are you solving it now?"
-    5. "What would a perfect solution look like?"
-    
-    DON'T ASK: "Would you use..." or "Do you think..."
-    DO ASK: About specific past behaviors and current solutions
-
-[ ] Ask: "How disappointed would you be if we disappeared?"
-    THE SEAN ELLIS TEST:
-    - Very disappointed
-    - Somewhat disappointed  
-    - Not disappointed
-    
-    PMF BENCHMARK: 40%+ say "very disappointed"
-    
-    FOLLOW-UP: "What would you use instead?"
-    This reveals your true competition
-
-[ ] Document exact words customers use
-    LISTEN FOR:
-    - How they describe the problem
-    - Words they use repeatedly
-    - Emotional language
-    - Outcome descriptions
-    
-    CREATE: "Voice of Customer" document with exact quotes
-    USE: This language in all your marketing
-
-[ ] Identify patterns in feedback
-    LOOK FOR:
-    - Same problem mentioned 3+ times
-    - Common workarounds they're using
-    - Features they ignore
-    - Jobs they're trying to do
-    
-    JOBS-TO-BE-DONE FRAMEWORK:
-    "When I [situation], I want to [motivation], 
-    so I can [expected outcome]"
-
-
-DAYS 4-7: PIVOT OR PERSEVERE DECISION
-======================================
-Time: 8 hours total
-
-[ ] Decide: narrow focus or find new market
-    
-    IF <40% WOULD BE DISAPPOINTED:
-    Option 1: Wrong market, right product
-    - Find people who desperately need this
-    - Look for extreme users
-    
-    Option 2: Right market, wrong product
-    - Pivot features toward core need
-    - Simplify to do one thing perfectly
-    
-    Option 3: Wrong market, wrong product
-    - Major pivot or shut down
-    - Use learnings for next attempt
-    
-    IF 40%+ WOULD BE DISAPPOINTED:
-    - Double down on those who love you
-    - Ignore everyone else
-    - Build for your champions
-
-[ ] Rewrite value proposition in customer's words
-    
-    FORMULA: We help [specific audience] achieve [specific outcome]
-    by [unique method] unlike [alternative]
-    
-    EXAMPLE:
-    "We help bootstrapped SaaS founders reach $10K MRR
-    by implementing systematic growth processes
-    unlike generic accelerator advice"
-    
-    TEST: Can customers explain this to others?
-
-[ ] Remove 3 features nobody uses
-    IDENTIFY: Features with <10% usage
-    REMOVE: Don't hide, actually delete code
-    SIMPLIFY: Fewer features = better experience
-    FOCUS: Core features get more love
-    
-    COMMUNICATE:
-    "We're simplifying [Product] to focus on what matters most.
-    Based on usage data, we're removing [features].
-    This lets us improve [core feature] faster."
-
-[ ] Test new positioning with 5 prospects
-    CREATE: New landing page with new positioning
-    SEND: To prospects, not existing customers
-    ASK: "What do you think this product does?"
-    MEASURE: Do they understand immediately?
-    ITERATE: Based on confusion points
-
-
-DAYS 8-14: VALIDATE THE CHANGES
-================================
-Time: 12 hours total
-
-[ ] Run targeted ads to new positioning
-    BUDGET: $500 across platforms
-    TARGETS: Your newly defined ICP
-    
-    FACEBOOK AD STRUCTURE:
-    - Interest targeting your exact audience
-    - Single clear value prop
-    - Send to dedicated landing page
-    - Track micro-conversions (not just sales)
-    
-    GOOGLE ADS:
-    - Target problem-aware searches
-    - Match ad copy to search intent
-    - Use exact match keywords only
-
-[ ] Measure engagement with new message
-    METRICS TO TRACK:
-    - Click-through rate (>2% good)
-    - Time on page (>2 minutes good)
-    - Bounce rate (<60% good)
-    - Email signups (>5% good)
-    - Trial starts (>2% good)
-    
-    A/B TEST: Old positioning vs new
-    WINNER: Whichever drives more trials
-
-[ ] Get 10 new customers with new approach
-    GOAL: Validate people will pay for new positioning
-    CHANNEL: Whatever worked best in testing
-    PRICE: Test 50% higher price with new positioning
-    MEASURE: Easier to sell? Higher close rate?
-
-[ ] Track if retention improves
-    COHORT ANALYSIS: New positioning customers vs old
-    MEASURE WEEKLY: Login frequency, feature usage, NPS
-    EXPECT: Better retention if true PMF
-    WARNING: May get worse before better as you transition`;
+        <!-- Minimal Footer -->
+        <div class="footer">
+            <div class="footer-brand">StartupStage</div>
+            <div>Page 1 of 1</div>
+            <div>© 2025 StartupStage | Proprietary & Confidential</div>
+        </div>
+    </div>
+</body>
+</html>
+            `;
+            
+            // Open in new window for printing
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(pdfHTML);
+            printWindow.document.close();
+            
+            // Auto-trigger print dialog after a short delay
+            setTimeout(() => {
+                printWindow.print();
+            }, 500);
         }
     </script>
 </body>
