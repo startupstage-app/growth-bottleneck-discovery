@@ -331,7 +331,6 @@
             .question-section { padding: 20px; }
             .diagnosis-card { padding: 25px; }
             
-            /* Stack the time and help sections on mobile */
             .implementation-plan .plan-header + div {
                 flex-direction: column;
                 align-items: stretch !important;
@@ -388,7 +387,6 @@
                 display: none !important;
             }
             
-            /* Hide the help CTA in implementation plan when printing */
             .implementation-plan > div:last-child {
                 display: none !important;
             }
@@ -454,7 +452,7 @@
                         <span class="icon">✓</span>
                     </div>
                     <div class="option-card" data-value="100k">
-                        $100K (Scale Stage)
+                        $100K+ (Scale Stage)
                         <span class="icon">✓</span>
                     </div>
                 </div>
@@ -1413,7 +1411,7 @@
             ];
         }
         
-        // Download function with branded PDF
+        // Download function with enhanced branded PDF
         function downloadPlan() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({
@@ -1426,6 +1424,7 @@
             const bottleneck = document.getElementById('bottleneckTitle').textContent;
             const description = document.getElementById('bottleneckDescription').textContent;
             const impact = document.getElementById('revenueImpact').textContent;
+            const badge = document.getElementById('bottleneckBadge').textContent;
             
             // Get bottleneck type
             let bottleneckType = 'pricing';
@@ -1450,7 +1449,7 @@
             
             // Helper function to check page break
             function checkPageBreak(neededSpace) {
-                if (yPosition + neededSpace > pageHeight - margin) {
+                if (yPosition + neededSpace > pageHeight - margin - 10) {
                     doc.addPage();
                     yPosition = margin;
                     addPageHeader();
@@ -1468,7 +1467,7 @@
             // Add header gradient bars
             addPageHeader();
             
-            // Title section
+            // Title section with dark background
             doc.setFillColor(...darkBg);
             doc.rect(0, 10, pageWidth, 40, 'F');
             
@@ -1483,17 +1482,30 @@
             doc.setTextColor(...textMuted);
             doc.text('GROWTH DIAGNOSTIC - IMPLEMENTATION GUIDE', margin, 32);
             
+            // Add tagline
+            doc.setFontSize(8);
+            doc.text('The Anti-Accelerator', margin, 37);
+            
             // Date
             doc.setFontSize(9);
             doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth - margin - 35, 32);
             
             yPosition = 60;
             
+            // Diagnosis Badge
+            doc.setFillColor(...darkBg);
+            doc.roundedRect(margin, yPosition, 50, 10, 3, 3, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(9);
+            doc.text(badge, margin + 25, yPosition + 6.5, { align: 'center' });
+            yPosition += 15;
+            
             // Diagnosis header
             doc.setTextColor(...purple);
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(18);
-            const titleLines = doc.splitTextToSize(bottleneck.toUpperCase(), pageWidth - (margin * 2));
+            const titleLines = doc.splitTextToSize(bottleneck, pageWidth - (margin * 2));
             doc.text(titleLines, margin, yPosition);
             yPosition += titleLines.length * 8;
             
@@ -1505,7 +1517,7 @@
             doc.text(descLines, margin, yPosition);
             yPosition += descLines.length * 5 + 5;
             
-            // Impact box
+            // Impact box with gradient background
             doc.setFillColor(243, 240, 255);
             doc.roundedRect(margin, yPosition, pageWidth - (margin * 2), 20, 3, 3, 'F');
             doc.setTextColor(...purple);
@@ -1514,36 +1526,51 @@
             doc.text('POTENTIAL MONTHLY IMPACT:', margin + 5, yPosition + 7);
             doc.setFontSize(14);
             doc.text(impact, margin + 5, yPosition + 15);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Based on similar companies at your stage', pageWidth - margin - 5, yPosition + 15, { align: 'right' });
             yPosition += 25;
             
-            // Key Issues
+            // Key Issues Header
             doc.setTextColor(50, 50, 50);
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(14);
             doc.text('KEY ISSUES IDENTIFIED:', margin, yPosition);
             yPosition += 10;
             
-            // Add symptoms
+            // Add symptoms with better formatting
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(10);
-            document.querySelectorAll('.symptom-item').forEach((symptom, index) => {
+            const symptoms = document.querySelectorAll('.symptom-item');
+            symptoms.forEach((symptom, index) => {
                 const title = symptom.querySelector('.symptom-title').textContent;
                 const desc = symptom.querySelector('div:last-child').textContent;
                 
-                checkPageBreak(20);
+                checkPageBreak(25);
                 
-                // Symptom number and title
+                // Draw symptom number circle
+                doc.setFillColor(...purple);
+                doc.circle(margin + 3, yPosition - 2, 3, 'F');
+                doc.setTextColor(255, 255, 255);
                 doc.setFont('helvetica', 'bold');
+                doc.setFontSize(8);
+                doc.text((index + 1).toString(), margin + 3, yPosition, { align: 'center' });
+                
+                // Symptom title
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
                 doc.setTextColor(...purple);
-                doc.text(`${index + 1}. ${title}`, margin, yPosition);
+                doc.text(title, margin + 10, yPosition);
                 yPosition += 6;
                 
                 // Symptom description
                 doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
                 doc.setTextColor(80, 80, 80);
                 const symptomLines = doc.splitTextToSize(desc, pageWidth - (margin * 2) - 10);
-                doc.text(symptomLines, margin + 5, yPosition);
-                yPosition += symptomLines.length * 5 + 5;
+                doc.text(symptomLines, margin + 10, yPosition);
+                yPosition += symptomLines.length * 4 + 8;
             });
             
             // Add page break before implementation plan
@@ -1558,6 +1585,19 @@
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(14);
             doc.text('14-DAY IMPLEMENTATION PLAN', margin + 5, yPosition + 8);
+            yPosition += 20;
+            
+            // Time investment box
+            doc.setFillColor(243, 240, 255);
+            doc.roundedRect(margin, yPosition, pageWidth - (margin * 2), 15, 3, 3, 'F');
+            doc.setTextColor(...purple);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('Total Time Investment: 25-30 hours over 14 days', margin + 5, yPosition + 6);
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(100, 100, 100);
+            doc.text('Average 2 hours per day', margin + 5, yPosition + 11);
             yPosition += 20;
             
             // Get implementation content based on bottleneck type
@@ -1676,7 +1716,8 @@
                 '• Monthly 1-on-1 calls with experienced founders',
                 '• Access to 20+ fractional C-suite experts',
                 '• Weekly implementation workshops',
-                '• Private community of serious founders'
+                '• Private community of serious founders',
+                '• 0% equity taken - forever'
             ];
             
             doc.setFontSize(10);
@@ -1687,8 +1728,9 @@
             
             yPosition += 5;
             doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
             doc.setTextColor(...purple);
-            doc.text('Your $47 diagnostic fee applies to your first month', pageWidth / 2, yPosition, { align: 'center' });
+            doc.text('Just $199/month • No equity • Cancel anytime', pageWidth / 2, yPosition, { align: 'center' });
             
             yPosition += 10;
             doc.setFont('helvetica', 'normal');
@@ -1704,7 +1746,7 @@
             
             yPosition += 10;
             doc.setTextColor(...textMuted);
-            doc.text('Join StartupStage ($199/month • No equity • Cancel anytime):', pageWidth / 2, yPosition, { align: 'center' });
+            doc.text('Join StartupStage:', pageWidth / 2, yPosition, { align: 'center' });
             yPosition += 5;
             doc.setTextColor(...pink);
             doc.textWithLink('startupstage.com/join', pageWidth / 2, yPosition, {
@@ -1712,10 +1754,18 @@
                 align: 'center'
             });
             
+            // Add footer
+            yPosition = pageHeight - 15;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text('© 2025 StartupStage | The Anti-Accelerator | 0% Equity Forever', pageWidth / 2, yPosition, { align: 'center' });
+            
             // Save the PDF
-            doc.save('startupstage-implementation-guide.pdf');
+            doc.save('startupstage-growth-diagnostic.pdf');
         }
         
+        // Implementation content functions remain the same
         function getPricingImplementation() {
             return `DAYS 1-3: PRICE DISCOVERY & RESEARCH
 =====================================
@@ -1835,56 +1885,7 @@ Time: 10 hours total
 [ ] Plan next price increase if >80% accept
     TIMELINE: Wait 6 months minimum between increases
     AMOUNT: 15-20% each time
-    COMMUNICATION: Always grandfather existing customers
-
-
-BONUS TEMPLATES & RESOURCES
-============================
-
-PRICE INCREASE EMAIL TO EXISTING CUSTOMERS:
--------------------------------------------
-Subject: Your pricing is safe (important update)
-
-Hi [Name],
-
-I wanted you to hear this from me first.
-
-We're increasing prices for NEW customers starting [date]. 
-
-But here's the important part: **Your price will never change.**
-
-You're grandfathered at $[current price] forever, as our thanks for believing in us early.
-
-The new pricing reflects the value we now deliver - [list 2-3 improvements].
-
-If you know anyone who could benefit from [product], they might want to sign up 
-before [date] to get your rate.
-
-Thanks for being an early supporter,
-[Your name]
-
-P.S. Want to lock in this rate with annual? Reply and I'll send a special link.
-
-
-PRICING PSYCHOLOGY TIPS:
-------------------------
-• End prices in 9 for consumer ($49) or 0 for B2B ($50)
-• Three tiers convert better than two or four
-• Show annual savings as dollar amount, not percentage
-• Use "per user" pricing only if customers naturally think that way
-• Highlight "Most Popular" on the tier you want them to choose
-• Put enterprise/custom pricing behind "Contact Us" (creates intrigue)
-
-
-COMMON PRICING MISTAKES TO AVOID:
----------------------------------
-❌ Competing on price (race to the bottom)
-❌ Too many pricing tiers (paralysis of choice)
-❌ Feature-based differentiation only (differentiate on outcomes)
-❌ Discounting too quickly (devalues product)
-❌ Complex pricing that requires calculator
-❌ Hiding pricing completely (reduces trust)
-❌ Apologizing for prices (shows lack of confidence)`;
+    COMMUNICATION: Always grandfather existing customers`;
         }
         
         function getRetentionImplementation() {
@@ -2047,69 +2048,7 @@ Time: 8 hours total
     IN-APP MESSAGE:
     "You're using [Product] like a pro! 
     Unlock [specific features] with [Premium Plan]
-    [Upgrade Now] [Remind Me Later]"
-
-
-RETENTION METRICS TO TRACK
-===========================
-Create a simple spreadsheet tracking:
-
-WEEKLY:
-- New signups
-- Active users (logged in past 7 days)
-- Churned users
-- Reactivated users
-
-MONTHLY:
-- Gross MRR churn rate (aim for <5%)
-- Net MRR retention (aim for >100%)
-- Customer lifetime value
-- Average customer lifespan
-
-COHORT ANALYSIS:
-Track each month's signups separately
-See which months retain better
-Identify what you did differently
-
-
-EMERGENCY SAVES FOR AT-RISK ACCOUNTS
-=====================================
-
-PAYMENT FAILURE SEQUENCE:
-Day 1: "Payment issue - account still active"
-Day 3: "Your payment failed (quick fix)"
-Day 5: "Last chance before downgrade"
-Day 7: Downgrade to free/pause account
-
-CANCELLATION FLOW:
-1. "Why are you leaving?" (multiple choice)
-2. Offer relevant save based on reason:
-   - Too expensive → Offer discount or downgrade
-   - Not using → Offer pause instead
-   - Missing features → Show roadmap
-   - Too complex → Offer free onboarding call
-3. "Take a break" option (pause for 3 months)
-4. Exit interview question (optional)
-
-
-TEMPLATES FOR COMMON SITUATIONS
-================================
-
-WIN-BACK EMAIL (30 days after churn):
-Subject: "[Name], your data is still here"
-
-"Hi [Name],
-
-It's been a month since you left [Product].
-
-Your account and data are still here waiting for you.
-
-We've also added [new feature] that addresses [problem they had].
-
-Want to give it another shot? Here's 50% off your first month back:
-[Reactivate with Code: COMEBACK50]
-
--[Your name]"`;
+    [Upgrade Now] [Remind Me Later]"`;
         }
         
         function getAcquisitionImplementation() {
@@ -2240,100 +2179,7 @@ Time: 12 hours total
     INCLUDE: Templates, examples, metrics
     TIME: How long each step takes
     TOOLS: Exactly what you used
-    RESULTS: What to expect at each stage
-
-
-CHANNEL-SPECIFIC PLAYBOOKS
-===========================
-
-GOOGLE ADS QUICK START:
-1. Start with 10 exact-match keywords
-2. One ad group per keyword
-3. 3 ads per ad group
-4. Landing page matches ad copy
-5. Start at $50/day budget
-6. Optimize for conversions after 50 clicks
-
-LINKEDIN ORGANIC STRATEGY:
-1. Post daily at 8am ET
-2. No links in post (put in comments)
-3. Use line breaks every 1-2 sentences
-4. Ask question at end
-5. Respond to every comment in first hour
-6. Connection requests to all engagers
-
-COLD EMAIL THAT WORKS:
-Subject: "Quick question about [their company]"
-
-"Hi [Name],
-
-I noticed [specific thing about their company].
-
-We help companies like [similar customer] achieve 
-[specific result].
-
-Worth a quick chat?
-
-[Your name]
-P.S. [Personalized detail]"
-
-CONTENT MARKETING FORMULA:
-1. Research: What are top 10 questions in your space?
-2. Create: Detailed guide answering each
-3. Optimize: Target long-tail keywords
-4. Promote: Share in relevant communities
-5. Repurpose: Turn into video, podcast, tweets
-
-
-ACQUISITION METRICS DASHBOARD
-==============================
-Track weekly in simple spreadsheet:
-
-TRAFFIC:
-- Unique visitors
-- Traffic by source
-- Bounce rate
-- Pages per session
-
-CONVERSION:
-- Trial signups
-- Trial → Paid %
-- Sales qualified leads
-- Close rate
-
-ECONOMICS:
-- CAC by channel
-- Payback period
-- LTV:CAC ratio
-- Monthly burn rate
-
-
-TOOLS FOR GROWTH
-================
-
-FREE:
-- Google Analytics (traffic analysis)
-- Google Search Console (SEO)
-- Facebook Pixel Helper (tracking)
-- Ubersuggest (keyword research)
-- Canva (design)
-
-PAID BUT WORTH IT:
-- Ahrefs ($99/mo) - SEO/content research
-- Apollo.io ($49/mo) - B2B prospecting
-- Instantly ($37/mo) - Cold email
-- Buffer ($15/mo) - Social scheduling
-- Hotjar ($32/mo) - User behavior
-
-
-RED FLAGS TO WATCH
-==================
-⚠️ CAC exceeding monthly subscription value
-⚠️ Conversion rate dropping week-over-week
-⚠️ One channel is >80% of acquisition
-⚠️ Growth is purely from paid ads
-⚠️ Sales cycle lengthening
-⚠️ Quality of leads decreasing`;
+    RESULTS: What to expect at each stage`;
         }
         
         function getOperationsImplementation() {
@@ -2532,77 +2378,7 @@ Time: 10 hours total
     - Customers: Daily
     - Usage: Weekly
     - Pipeline: Weekly
-    - Operations: Daily
-
-
-PRODUCTIVITY FRAMEWORKS
-=======================
-
-TIME BLOCKING METHOD:
-- 9-11am: Deep work (product/strategy)
-- 11am-12pm: Communications
-- 1-3pm: Meetings/calls
-- 3-5pm: Admin/operations
-- 5-6pm: Planning tomorrow
-
-EISENHOWER MATRIX:
-- Urgent + Important: Do now
-- Not Urgent + Important: Schedule
-- Urgent + Not Important: Delegate
-- Not Urgent + Not Important: Delete
-
-BATCH PROCESSING:
-- Email: 2x daily (11am, 4pm)
-- Social media: 1x weekly batch creation
-- Content: Monthly planning, weekly creation
-- Meetings: Specific days only
-- Admin: Friday afternoons
-
-PARKINSON'S LAW:
-"Work expands to fill time available"
-- Set aggressive deadlines
-- Use timers for tasks
-- Ship at 80% perfect
-- Iterate after shipping
-
-
-TOOLS TO ELIMINATE FRICTION
-============================
-
-COMMUNICATION:
-- Calendly (eliminates back-and-forth)
-- Loom (replaces long emails)
-- Slack (centralizes team chat)
-- Typeform (beautiful forms)
-
-AUTOMATION:
-- Zapier (connects everything)
-- IFTTT (simple automations)
-- Make/Integromat (complex workflows)
-- Phantombuster (web automation)
-
-PRODUCTIVITY:
-- Rescue Time (tracks where time goes)
-- Freedom (blocks distractions)
-- TextExpander (types repetitive text)
-- Alfred/Raycast (Mac productivity)
-
-OPERATIONS:
-- Process.st (process checklists)
-- Trainual (team training)
-- Bardeen (browser automation)
-- Magical (repetitive typing)
-
-
-WARNING SIGNS YOU'RE STILL INEFFICIENT
-=======================================
-🚨 Working >60 hours but revenue flat
-🚨 Everything breaks when you take a day off
-🚨 Doing same tasks as 6 months ago
-🚨 No documented processes
-🚨 Context switching every 15 minutes
-🚨 Inbox has >50 unread emails
-🚨 Can't take vacation without laptop`;
+    - Operations: Daily`;
         }
         
         function getPMFImplementation() {
@@ -2764,126 +2540,7 @@ Time: 12 hours total
     COHORT ANALYSIS: New positioning customers vs old
     MEASURE WEEKLY: Login frequency, feature usage, NPS
     EXPECT: Better retention if true PMF
-    WARNING: May get worse before better as you transition
-
-
-PRODUCT-MARKET FIT INDICATORS
-==============================
-
-STRONG PMF SIGNALS:
-✓ 40%+ would be "very disappointed" without you
-✓ Organic word-of-mouth growth
-✓ Users describe product enthusiastically
-✓ Retention curves flatten (not declining)
-✓ Sales cycles shortening
-✓ Price increases don't affect conversion
-✓ Customer pull vs company push
-
-WEAK PMF SIGNALS:
-✗ Retention steadily declining
-✗ Long sales cycles with education
-✗ Features requested all over the map
-✗ Customers compare you to many alternatives
-✗ Growth requires heavy marketing spend
-✗ Customers churning after trial
-✗ Can't explain value in one sentence
-
-
-REPOSITIONING TEMPLATES
-=======================
-
-NEW WEBSITE HEADLINE:
-"The only [solution] designed specifically for [niche audience]"
-
-COLD EMAIL FOR NEW POSITIONING:
-"Subject: [Specific problem] at [Company]?
-
-Hi [Name],
-
-I noticed [specific observation about their company].
-
-Most [their role] tell me [specific problem].
-
-We built [Product] specifically for [their situation].
-[Similar customer] used it to [specific result].
-
-Worth a quick look? [Link to 2-min video]
-
--[Your name]"
-
-PIVOT ANNOUNCEMENT TO USERS:
-"Subject: We're doubling down on what you love
-
-Based on your feedback and usage data, we're making
-[Product] dramatically better at [core value].
-
-This means:
-- Removing features that didn't deliver value
-- Faster improvements to [core feature]
-- Lower price for streamlined product
-
-Your account continues normally, but you'll notice
-[specific improvements] starting today.
-
-Questions? Just reply.
-
--[Your name]"
-
-
-COMMON PMF PIVOTS THAT WORK
-============================
-
-1. VERTICAL FOCUS:
-From: "CRM for small business"
-To: "CRM for digital agencies"
-
-2. USE CASE FOCUS:
-From: "Project management"
-To: "Client onboarding system"
-
-3. BUYER FOCUS:
-From: "For marketing teams"
-To: "For solo consultants"
-
-4. PROBLEM FOCUS:
-From: "All-in-one solution"
-To: "Just fixes [specific pain]"
-
-5. INTEGRATION FOCUS:
-From: "Standalone tool"
-To: "Perfect [Other Tool] addon"
-
-
-VALIDATION FRAMEWORKS
-=====================
-
-ICE SCORING:
-- Impact (if it works, how big?)
-- Confidence (will it work?)
-- Ease (how hard to test?)
-Score each 1-10, multiply together
-
-RISKIEST ASSUMPTION TEST:
-1. List all assumptions
-2. Rank by risk to business
-3. Test highest risk first
-4. Design smallest test possible
-
-CONCIERGE MVP:
-Do it manually first:
-1. Sell the outcome
-2. Deliver with human effort
-3. Learn what to automate
-4. Build only validated features
-
-
-BOOKS TO READ THIS WEEK
-========================
-📚 "The Mom Test" - How to interview customers
-📚 "Jobs to be Done" - Understanding customer needs
-📚 "Lean Startup" - MVP and iteration process
-📚 "Crossing the Chasm" - Market positioning
-📚 "Obviously Awesome" - April Dunford positioning`;
+    WARNING: May get worse before better as you transition`;
         }
     </script>
 </body>
