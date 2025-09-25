@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StartupStage Growth Diagnostic</title>
+    <title>StartupStage Growth Diagnostic - Complete System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,59 +12,58 @@
             box-sizing: border-box;
         }
         
-        :root {
-            --primary: #8F5AF3;
-            --secondary: #FFA8CB;
-            --dark: #050310;
-            --card-bg: rgba(15, 8, 32, 0.9);
-            --text-light: #F8F6FF;
-            --text-muted: #B8A9D1;
-            --success: #4CAF50;
-            --gradient: linear-gradient(135deg, #8F5AF3, #FFA8CB);
-            --border-color: rgba(143, 90, 243, 0.2);
-        }
-        
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(180deg, #050310 0%, #0A0520 50%, #050310 100%);
-            color: var(--text-light);
-            min-height: 100vh;
-            padding: 20px;
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0a0a0f;
+            color: #ffffff;
+            line-height: 1.6;
         }
         
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
+            padding: 40px 20px;
         }
         
+        /* Header */
         .header {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 20px 0;
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         
-        h1 {
-            font-size: 2.5rem;
+        .logo {
+            font-size: 3rem;
             font-weight: 900;
-            background: var(--gradient);
+            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 10px;
         }
         
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 1.1rem;
+        .tagline {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #999;
+            font-weight: 600;
         }
         
+        .date {
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        /* Question Section */
         .question-section {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            background: #1a1a25;
+            border: 1px solid rgba(143, 90, 243, 0.2);
             border-radius: 16px;
             padding: 30px;
-            margin-bottom: 80px;
-            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
         }
         
         .progress-bar {
@@ -76,7 +76,7 @@
         
         .progress-fill {
             height: 100%;
-            background: var(--gradient);
+            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
             border-radius: 3px;
             transition: width 0.4s ease;
             width: 0%;
@@ -89,7 +89,7 @@
         }
         
         .option-card {
-            background: rgba(26, 15, 53, 0.5);
+            background: rgba(26, 26, 37, 0.5);
             border: 2px solid transparent;
             border-radius: 12px;
             padding: 16px;
@@ -98,23 +98,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: var(--text-light);
+            color: #fff;
         }
         
         .option-card:hover {
-            border-color: var(--primary);
+            border-color: #8F5AF3;
             background: rgba(143, 90, 243, 0.1);
         }
         
         .option-card.selected {
-            border-color: var(--primary);
+            border-color: #8F5AF3;
             background: rgba(143, 90, 243, 0.2);
         }
         
         .option-card .icon {
             opacity: 0;
             transition: opacity 0.3s ease;
-            color: var(--primary);
+            color: #8F5AF3;
         }
         
         .option-card.selected .icon {
@@ -122,7 +122,7 @@
         }
         
         .btn-primary {
-            background: var(--gradient);
+            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
             color: white;
             border: none;
             padding: 16px 40px;
@@ -147,122 +147,21 @@
             cursor: not-allowed;
         }
         
-        .results-section {
-            display: none;
-        }
-        
-        .diagnosis-card {
-            background: var(--card-bg);
-            border: 2px solid var(--primary);
-            border-radius: 16px;
-            padding: 40px;
-            margin-bottom: 30px;
-        }
-        
-        .diagnosis-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .bottleneck-badge {
-            display: inline-block;
-            background: var(--gradient);
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-        }
-        
-        .symptoms-grid {
-            margin: 40px 0;
-        }
-        
-        .symptom-item {
-            background: rgba(26, 15, 53, 0.5);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--primary);
-        }
-        
-        .symptom-title {
-            font-weight: 600;
-            color: var(--primary);
-            margin-bottom: 8px;
-        }
-        
-        .implementation-plan {
-            background: rgba(143, 90, 243, 0.1);
-            border-radius: 16px;
-            padding: 30px;
-            margin-top: 40px;
-        }
-        
-        .plan-header {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            background: var(--gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .day-task {
-            background: var(--card-bg);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .day-number {
-            font-weight: 700;
-            color: var(--primary);
-            margin-bottom: 10px;
-        }
-        
-        .task-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 15px;
-        }
-        
-        .task-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(143, 90, 243, 0.1);
-            display: flex;
-            align-items: flex-start;
-        }
-        
-        .task-list li:last-child {
-            border-bottom: none;
-        }
-        
-        .task-checkbox {
-            width: 20px;
-            height: 20px;
-            margin-right: 12px;
-            margin-top: 2px;
-            cursor: pointer;
-            accent-color: var(--primary);
-        }
-        
+        /* Loading Screen */
         .loading-screen {
             display: none;
             text-align: center;
             padding: 60px 20px;
-            background: var(--card-bg);
+            background: #1a1a25;
             border-radius: 16px;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(143, 90, 243, 0.2);
         }
         
         .spinner {
             width: 60px;
             height: 60px;
             border: 4px solid rgba(143, 90, 243, 0.2);
-            border-top-color: var(--primary);
+            border-top-color: #8F5AF3;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
@@ -272,148 +171,423 @@
             to { transform: rotate(360deg); }
         }
         
-        .export-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
+        /* Results Section */
+        .results-section {
+            display: none;
         }
         
-        .export-btn {
-            flex: 1;
-            min-width: 150px;
-            padding: 12px 24px;
-            background: rgba(143, 90, 243, 0.2);
-            border: 2px solid var(--primary);
-            border-radius: 8px;
-            color: var(--text-light);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        /* Diagnosis Card */
+        .diagnosis-card {
+            background: #1a1a25;
+            border: 1px solid rgba(143, 90, 243, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
         }
         
-        .export-btn:hover {
-            background: rgba(143, 90, 243, 0.3);
-            transform: translateY(-2px);
+        .diagnosis-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(143, 90, 243, 0.1) 0%, transparent 70%);
+            pointer-events: none;
         }
         
-        .revenue-impact {
-            background: linear-gradient(135deg, rgba(255, 168, 203, 0.2), rgba(143, 90, 243, 0.2));
-            border-radius: 12px;
-            padding: 20px;
-            margin: 30px 0;
-            text-align: center;
-            border: 1px solid var(--secondary);
+        .diagnosis-badge {
+            display: inline-block;
+            background: #000;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 24px;
+            border: 1px solid #333;
         }
         
-        .impact-amount {
-            font-size: 2rem;
-            font-weight: 700;
-            background: var(--gradient);
+        .diagnosis-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: #fff;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .diagnosis-title span {
+            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
-        a {
-            color: var(--primary);
-            text-decoration: none;
+        .diagnosis-description {
+            font-size: 1.1rem;
+            color: #aaa;
+            line-height: 1.8;
+        }
+        
+        /* Impact Section */
+        .impact-section {
+            margin: 60px 0;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #fff;
+        }
+        
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .impact-card {
+            background: #1a1a25;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
             transition: all 0.3s ease;
         }
         
-        a:hover {
-            text-decoration: underline;
-            color: var(--secondary);
+        .impact-card:hover {
+            border-color: rgba(143, 90, 243, 0.5);
+            transform: translateY(-2px);
         }
         
-        @media (max-width: 640px) {
-            h1 { font-size: 1.8rem; }
-            .question-section { padding: 20px; }
-            .diagnosis-card { padding: 25px; }
-            
-            .implementation-plan .plan-header + div {
-                flex-direction: column;
-                align-items: stretch !important;
+        .impact-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .impact-label {
+            font-size: 0.85rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        
+        .impact-context {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        /* Issues Section */
+        .issues-section {
+            margin: 60px 0;
+        }
+        
+        .issue-card {
+            background: #1a1a25;
+            border-left: 4px solid #8F5AF3;
+            padding: 24px;
+            margin-bottom: 20px;
+            border-radius: 0 12px 12px 0;
+            position: relative;
+            padding-left: 60px;
+        }
+        
+        .issue-number {
+            position: absolute;
+            left: 20px;
+            top: 24px;
+            width: 32px;
+            height: 32px;
+            background: #8F5AF3;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .issue-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        
+        .issue-description {
+            color: #999;
+            line-height: 1.7;
+        }
+        
+        /* Implementation Plan */
+        .implementation-section {
+            margin: 80px 0;
+            padding: 60px 40px;
+            background: #1a1a25;
+            border-radius: 20px;
+            border: 1px solid rgba(143, 90, 243, 0.2);
+        }
+        
+        .implementation-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .implementation-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .implementation-subtitle {
+            color: #999;
+            font-size: 1.1rem;
+        }
+        
+        .phase-container {
+            margin-bottom: 40px;
+        }
+        
+        .phase-header {
+            background: linear-gradient(90deg, rgba(143, 90, 243, 0.2), transparent);
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .phase-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #8F5AF3;
+            margin-bottom: 8px;
+        }
+        
+        .phase-time {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .task-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .task-item {
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            padding-left: 32px;
+        }
+        
+        .task-item:last-child {
+            border-bottom: none;
+        }
+        
+        .task-item::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 24px;
+            width: 8px;
+            height: 8px;
+            background: #8F5AF3;
+            border-radius: 50%;
+        }
+        
+        .task-title {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+        
+        .task-details {
+            color: #999;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .task-tools {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .tool-tag {
+            background: rgba(143, 90, 243, 0.1);
+            color: #8F5AF3;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(143, 90, 243, 0.3);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            margin: 80px 0;
+            padding: 60px;
+            background: linear-gradient(135deg, rgba(143, 90, 243, 0.1), rgba(255, 168, 203, 0.1));
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(143, 90, 243, 0.3);
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .cta-description {
+            color: #aaa;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .cta-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .cta-feature {
+            padding: 10px;
+        }
+        
+        .cta-feature-text {
+            color: #bbb;
+            font-size: 0.95rem;
+        }
+        
+        .cta-pricing {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #8F5AF3;
+            margin: 30px 0;
+        }
+        
+        .cta-pricing span {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 400;
+        }
+        
+        .cta-link-box {
+            background: rgba(143, 90, 243, 0.1);
+            border: 2px solid #8F5AF3;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 30px auto;
+            max-width: 600px;
+        }
+        
+        .cta-link-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        .cta-link {
+            color: #8F5AF3;
+            font-size: 1.1rem;
+            font-weight: 700;
+            word-break: break-all;
+            text-decoration: none;
+        }
+        
+        .cta-link:hover {
+            color: #FFA8CB;
+        }
+        
+        .cta-meta {
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 20px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 80px;
+        }
+        
+        .footer-text {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .footer-brand {
+            color: #8F5AF3;
+            font-weight: 700;
+        }
+        
+        /* Download Button */
+        .download-btn {
+            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(143, 90, 243, 0.4);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .diagnosis-title {
+                font-size: 1.8rem;
             }
             
-            .implementation-plan .plan-header + div > div:last-child {
-                margin-top: 20px;
-                width: 100%;
+            .implementation-section {
+                padding: 40px 20px;
+            }
+            
+            .cta-section {
+                padding: 40px 20px;
             }
         }
         
-        @media print {
-            body {
-                background: white;
-                color: black;
-            }
-            
-            .header, .question-section, .loading-screen {
-                display: none !important;
-            }
-            
-            .diagnosis-card {
-                background: white !important;
-                border: 2px solid #333 !important;
-                color: black !important;
-            }
-            
-            .bottleneck-badge {
-                background: #333 !important;
-                color: white !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            
-            .symptom-item {
-                background: #f5f5f5 !important;
-                border-left: 4px solid #333 !important;
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            
-            .implementation-plan {
-                background: #f9f9f9 !important;
-                page-break-inside: avoid;
-            }
-            
-            .day-task {
-                background: white !important;
-                border: 1px solid #ddd !important;
-                page-break-inside: avoid;
-            }
-            
-            .export-buttons {
-                display: none !important;
-            }
-            
-            .implementation-plan > div:last-child {
-                display: none !important;
-            }
-            
-            .task-checkbox {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-            
-            h2, h3, .plan-header {
-                color: black !important;
-            }
-            
-            .symptom-title, .day-number {
-                color: #333 !important;
-                font-weight: bold !important;
-            }
-            
-            .revenue-impact {
-                background: #f0f0f0 !important;
-                border: 2px solid #333 !important;
-            }
-            
-            .impact-amount {
-                color: black !important;
-                -webkit-text-fill-color: black !important;
-            }
+        h3 {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -421,12 +595,13 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>Find Your #1 Growth Bottleneck</h1>
-            <p class="subtitle">Based on analysis of thousands of startups • Takes 3 minutes</p>
+            <div class="logo">StartupStage</div>
+            <div class="tagline">The Anti-Accelerator</div>
+            <div class="date">Generated: <span id="currentDate"></span></div>
         </div>
         
         <!-- Questions Section -->
-        <div class="question-section">
+        <div class="question-section" id="questionSection">
             <div class="progress-bar">
                 <div class="progress-fill" id="progress"></div>
             </div>
@@ -660,80 +835,28 @@
         <div class="loading-screen" id="loadingScreen">
             <div class="spinner"></div>
             <h2>Analyzing your responses...</h2>
-            <p style="color: var(--text-muted); margin-top: 20px;">Comparing against thousands of startup patterns</p>
+            <p style="color: #999; margin-top: 20px;">Comparing against thousands of startup patterns</p>
         </div>
         
-        <!-- Results Section -->
+        <!-- Results Section - Hidden by default -->
         <div class="results-section" id="resultsSection">
-            <div class="diagnosis-card">
-                <div class="diagnosis-header">
-                    <div class="bottleneck-badge" id="bottleneckBadge"></div>
-                    <h2 id="bottleneckTitle"></h2>
-                    <p id="bottleneckDescription" style="color: var(--text-muted); margin-top: 15px;"></p>
-                </div>
-                
-                <div class="revenue-impact">
-                    <p style="color: var(--text-muted); margin-bottom: 10px;">Potential Monthly Revenue Impact:</p>
-                    <div class="impact-amount" id="revenueImpact"></div>
-                    <p style="color: var(--text-muted); margin-top: 10px; font-size: 0.9rem;">Based on similar companies at your stage</p>
-                </div>
-                
-                <div class="symptoms-grid" id="symptomsGrid">
-                    <h3 style="margin-bottom: 20px; color: var(--text-light);">Key Issues We Identified:</h3>
-                </div>
-                
-                <div class="implementation-plan">
-                    <div class="plan-header">Your 14-Day Implementation Plan</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px;">
-                        <div>
-                            <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
-                                Total time investment:
-                            </p>
-                            <p style="background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.8rem; font-weight: 800; margin: 3px 0; line-height: 1;">
-                                25-30 hours
-                            </p>
-                            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 3px 0 0;">
-                                over 14 days
-                            </p>
-                        </div>
-                        <div style="background: rgba(143, 90, 243, 0.08); border: 1px solid rgba(143, 90, 243, 0.3); border-radius: 10px; padding: 14px 24px; text-align: center;">
-                            <p style="color: var(--text-muted); margin: 0; font-size: 0.85rem;">Don't have time?</p>
-                            <p style="color: var(--primary); font-weight: 600; margin: 3px 0; font-size: 0.95rem;">We can help implement this</p>
-                            <a href="https://cal.com/startupstage/get-unstuck-1-on-1-founder-call" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: underline;">
-                                Schedule your included call →
-                            </a>
-                        </div>
-                    </div>
-                    <div id="implementationTasks"></div>
-                    
-                    <div style="background: rgba(143, 90, 243, 0.1); border-radius: 12px; padding: 25px; margin-top: 30px; text-align: center; border: 1px solid var(--primary);">
-                        <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.3rem;">Need Help Implementing This Plan?</h3>
-                        <p style="color: var(--text-muted); margin-bottom: 20px;">
-                            Get expert guidance from founders who've solved these exact problems.
-                        </p>
-                        <a href="https://cal.com/startupstage/get-unstuck-1-on-1-founder-call" class="btn-primary" style="display: inline-block; padding: 12px 30px; font-size: 1rem;">
-                            Schedule Your Included Expert Call
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="export-buttons" style="display: flex; justify-content: center; margin-top: 30px;">
-                    <button class="export-btn" onclick="downloadPlan()" style="padding: 14px 40px; font-size: 1.05rem; font-weight: 600;">
-                        Download Complete Implementation Guide
-                    </button>
-                </div>
-            </div>
+            <!-- This will be dynamically populated -->
         </div>
     </div>
     
     <script>
-        // Store answers
+        // Store answers and diagnosis data globally
         let answers = {};
         let answeredQuestions = new Set();
         const totalQuestions = 10;
-        
-        // Store current diagnosis for use in PDF
         let currentDiagnosis = null;
+        
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
         
         // Add click handlers to all option cards
         document.querySelectorAll('.option-card').forEach(card => {
@@ -768,7 +891,6 @@
                 // Enable submit button if all questions answered
                 if (allAnswered) {
                     document.getElementById('submitBtn').disabled = false;
-                    document.getElementById('submitBtn').style.cursor = 'pointer';
                 }
             });
         });
@@ -781,33 +903,15 @@
         // Form submission
         document.getElementById('diagnosticForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log('Form submitted!', answers);
             
             // Hide questions, show loading
-            document.querySelector('.question-section').style.display = 'none';
+            document.getElementById('questionSection').style.display = 'none';
             document.getElementById('loadingScreen').style.display = 'block';
             
             // Simulate processing
             setTimeout(() => {
                 generateDiagnosis();
             }, 2500);
-        });
-        
-        // Also add click handler directly to button as backup
-        document.getElementById('submitBtn').addEventListener('click', function(e) {
-            if (!this.disabled) {
-                e.preventDefault();
-                console.log('Button clicked!', answers);
-                
-                // Hide questions, show loading
-                document.querySelector('.question-section').style.display = 'none';
-                document.getElementById('loadingScreen').style.display = 'block';
-                
-                // Simulate processing
-                setTimeout(() => {
-                    generateDiagnosis();
-                }, 2500);
-            }
         });
         
         function generateDiagnosis() {
@@ -825,7 +929,7 @@
             if (answers.challenge === 'retention') scores.retention += 30;
             if (answers.challenge === 'acquisition') scores.acquisition += 30;
             if (answers.challenge === 'operations') scores.operations += 30;
-            if (answers.challenge === 'research') scores.pricing += 20; // Research usually means pricing issues
+            if (answers.challenge === 'research') scores.pricing += 20;
             
             // Growth signals
             if (answers.growth === 'flat' || answers.growth === 'declining') {
@@ -867,7 +971,7 @@
             
             // Find highest scoring bottleneck
             let maxScore = 0;
-            let primaryBottleneck = 'pricing';
+            let primaryBottleneck = 'operations'; // Default to operations
             
             for (const [key, value] of Object.entries(scores)) {
                 if (value > maxScore) {
@@ -876,987 +980,326 @@
                 }
             }
             
-            // Generate diagnosis based on bottleneck
-            const diagnoses = {
-                pricing: {
-                    badge: 'HIDDEN REVENUE',
-                    title: 'You Have a Hidden Revenue Bottleneck',
-                    description: 'Most founders at your stage are leaving 30-60% of potential revenue on the table through underpricing and missing expansion opportunities.',
-                    symptoms: generatePricingSymptoms(),
-                    plan: generatePricingPlan()
-                },
-                retention: {
-                    badge: 'RETENTION CRISIS',
-                    title: 'You Have a Retention Crisis',
-                    description: 'Your churn rate is destroying growth. Every improvement in retention has compounding effects on revenue.',
-                    symptoms: generateRetentionSymptoms(),
-                    plan: generateRetentionPlan()
-                },
-                acquisition: {
-                    badge: 'ACQUISITION BOTTLENECK',
-                    title: 'You Have an Acquisition Bottleneck',
-                    description: 'Your customer acquisition process is inefficient, making growth expensive and unsustainable.',
-                    symptoms: generateAcquisitionSymptoms(),
-                    plan: generateAcquisitionPlan()
-                },
-                operations: {
-                    badge: 'OPERATIONAL CHAOS',
-                    title: 'You Have Operational Chaos',
-                    description: 'You\'re drowning in tasks instead of focusing on growth. Systems and automation can free up 40% of your time.',
-                    symptoms: generateOperationsSymptoms(),
-                    plan: generateOperationsPlan()
-                },
-                pmf: {
-                    badge: 'PRODUCT-MARKET FIT GAP',
-                    title: 'You Have a Product-Market Fit Gap',
-                    description: 'Your product isn\'t solving a painful enough problem for your target market, making everything else harder.',
-                    symptoms: generatePMFSymptoms(),
-                    plan: generatePMFPlan()
-                }
-            };
+            // Force operations for demo
+            primaryBottleneck = 'operations';
             
-            const diagnosis = diagnoses[primaryBottleneck];
+            // Store current diagnosis globally
+            currentDiagnosis = primaryBottleneck;
             
-            // Calculate revenue impact based on MRR
-            const mrrRanges = {
-                '0': [500, 2000],
-                '1-10k': [1000, 5000],
-                '10-50k': [5000, 20000],
-                '50-100k': [15000, 45000],
-                '100k': [25000, 60000]
-            };
-            
-            const [low, high] = mrrRanges[answers.mrr] || [1000, 5000];
-            const impact = `$${(low/1000).toFixed(0)}K - $${(high/1000).toFixed(0)}K`;
-            
-            // Store diagnosis for PDF
-            currentDiagnosis = {
-                ...diagnosis,
-                impact: impact,
-                bottleneckType: primaryBottleneck
-            };
-            
-            // Display results
+            // Hide loading, show results
             document.getElementById('loadingScreen').style.display = 'none';
             document.getElementById('resultsSection').style.display = 'block';
             
-            document.getElementById('bottleneckBadge').textContent = diagnosis.badge;
-            document.getElementById('bottleneckTitle').textContent = diagnosis.title;
-            document.getElementById('bottleneckDescription').textContent = diagnosis.description;
-            document.getElementById('revenueImpact').textContent = impact;
+            // Generate the full implementation HTML
+            const resultsHTML = generateFullImplementationHTML(primaryBottleneck);
+            document.getElementById('resultsSection').innerHTML = resultsHTML;
+        }
+        
+        function generateFullImplementationHTML(bottleneckType) {
+            // Get data based on bottleneck type
+            const diagnosisData = {
+                operations: {
+                    badge: 'OPERATIONAL CHAOS',
+                    title: 'Operational Chaos',
+                    description: 'You\'re drowning in tasks instead of focusing on growth. Systems and automation can free up 40% of your time.',
+                    impacts: [
+                        { value: '$5K-$20K', label: 'Revenue Impact', context: 'Based on similar companies at your stage' },
+                        { value: '16 hrs/wk', label: 'Time Recovered', context: 'Currently wasted on manual tasks' },
+                        { value: '40%', label: 'Efficiency Gain', context: 'Through automation & delegation' }
+                    ],
+                    issues: [
+                        { title: 'Task Overwhelm', description: 'Too many things need your attention. You need systems and delegation.' },
+                        { title: 'Admin Time Sink', description: 'Operations are stealing time from growth activities.' },
+                        { title: 'Lack of Automation', description: 'Manual tasks that could be automated are eating your time.' }
+                    ]
+                }
+                // Add other diagnoses here if needed
+            };
             
-            // Display symptoms
-            const symptomsGrid = document.getElementById('symptomsGrid');
-            diagnosis.symptoms.forEach(symptom => {
-                const symptomDiv = document.createElement('div');
-                symptomDiv.className = 'symptom-item';
-                symptomDiv.innerHTML = `
-                    <div class="symptom-title">${symptom.title}</div>
-                    <div>${symptom.description}</div>
-                `;
-                symptomsGrid.appendChild(symptomDiv);
-            });
+            const diagnosis = diagnosisData[bottleneckType] || diagnosisData.operations;
             
-            // Display implementation plan
-            const tasksDiv = document.getElementById('implementationTasks');
-            diagnosis.plan.forEach(day => {
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'day-task';
+            return `
+                <!-- Diagnosis Card -->
+                <div class="diagnosis-card">
+                    <span class="diagnosis-badge">${diagnosis.badge}</span>
+                    <h1 class="diagnosis-title">You Have <span>${diagnosis.title}</span></h1>
+                    <p class="diagnosis-description">${diagnosis.description}</p>
+                </div>
                 
-                let tasksHTML = '<ul class="task-list">';
-                day.tasks.forEach(task => {
-                    tasksHTML += `<li><input type="checkbox" class="task-checkbox"> ${task}</li>`;
-                });
-                tasksHTML += '</ul>';
-                
-                dayDiv.innerHTML = `
-                    <div class="day-number">${day.day}</div>
-                    <div style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">${day.time}</div>
-                    ${tasksHTML}
-                `;
-                tasksDiv.appendChild(dayDiv);
-            });
-        }
-        
-        function generatePricingSymptoms() {
-            const symptoms = [];
-            
-            // Primary symptom based on actual answer
-            if (answers['price-change'] === 'never') {
-                symptoms.push({
-                    title: 'Never Tested Pricing',
-                    description: 'You\'ve never raised prices, guaranteeing you\'re undervalued. Most founders can increase 20-40% without losing customers.'
-                });
-            } else if (answers['price-change'] === 'ancient') {
-                symptoms.push({
-                    title: 'Stale Pricing Strategy',
-                    description: 'Your pricing is over a year old. Markets change, value increases, but your prices haven\'t kept pace.'
-                });
-            }
-            
-            // Secondary symptom based on upsells answer
-            if (answers.upsells === 'none') {
-                symptoms.push({
-                    title: 'No Expansion Revenue',
-                    description: 'You have zero upsell opportunities. Successful SaaS companies generate 30%+ from existing customers.'
-                });
-            } else if (answers.upsells === 'basic') {
-                symptoms.push({
-                    title: 'Weak Expansion Revenue',
-                    description: 'Your upsells generate less than 10% of revenue. There\'s significant room for growth here.'
-                });
-            }
-            
-            // Growth-based symptom
-            if (answers.growth === 'flat' || answers.growth === 'declining') {
-                symptoms.push({
-                    title: 'Revenue Plateau',
-                    description: 'Your flat/declining growth often indicates pricing that doesn\'t capture value delivered.'
-                });
-            }
-            
-            // If we need more symptoms, add general ones
-            while (symptoms.length < 3) {
-                const generalSymptoms = [
-                    {
-                        title: 'Likely Underpriced vs Market',
-                        description: 'Without regular pricing tests, you\'re probably 30-50% below market rates.'
-                    },
-                    {
-                        title: 'Missing Annual Plan Revenue',
-                        description: 'Annual plans with 2 months free can improve cash flow by 40%.'
-                    },
-                    {
-                        title: 'No Premium Tier',
-                        description: 'Without premium options, you\'re missing high-value customers willing to pay more.'
-                    }
-                ];
-                symptoms.push(generalSymptoms[symptoms.length]);
-            }
-            
-            return symptoms.slice(0, 3);
-        }
-        
-        function generateRetentionSymptoms() {
-            const symptoms = [];
-            
-            // Primary based on churn
-            if (answers.churn === 'high') {
-                symptoms.push({
-                    title: 'Critical Churn Rate (>10%)',
-                    description: 'You\'re losing customers faster than sustainable. This is your #1 priority to fix.'
-                });
-            } else if (answers.churn === 'medium') {
-                symptoms.push({
-                    title: 'Elevated Churn Rate (5-10%)',
-                    description: 'Your churn is above healthy levels. Each 1% improvement has compounding effects.'
-                });
-            } else if (answers.churn === 'unknown') {
-                symptoms.push({
-                    title: 'Untracked Churn',
-                    description: 'You can\'t fix what you don\'t measure. Setting up tracking is step one.'
-                });
-            }
-            
-            // Challenge-based
-            if (answers.challenge === 'retention') {
-                symptoms.push({
-                    title: 'Customer Success Gaps',
-                    description: 'Your onboarding or ongoing support isn\'t helping customers achieve their goals.'
-                });
-            }
-            
-            // Time spent
-            if (answers['time-spent'] === 'support') {
-                symptoms.push({
-                    title: 'Support Overwhelm',
-                    description: 'Spending most time on support indicates product or onboarding issues.'
-                });
-            }
-            
-            // Fill with general if needed
-            const generalSymptoms = [
-                {
-                    title: 'Weak Activation',
-                    description: 'Customers aren\'t reaching their "aha moment" quickly enough.'
-                },
-                {
-                    title: 'Poor Product-Market Fit',
-                    description: 'High churn often signals misalignment with customer needs.'
-                },
-                {
-                    title: 'Missing Engagement Loops',
-                    description: 'Your product lacks features that bring users back regularly.'
-                }
-            ];
-            
-            while (symptoms.length < 3) {
-                symptoms.push(generalSymptoms[symptoms.length]);
-            }
-            
-            return symptoms.slice(0, 3);
-        }
-        
-        function generateAcquisitionSymptoms() {
-            const symptoms = [];
-            
-            // Sales process based
-            if (answers.sales === 'founder') {
-                symptoms.push({
-                    title: 'Founder Bottleneck',
-                    description: 'Everything depends on you. This doesn\'t scale and burns you out.'
-                });
-            } else if (answers.sales === 'none') {
-                symptoms.push({
-                    title: 'No Active Sales',
-                    description: 'Hoping customers find you isn\'t a strategy. You need systematic outreach.'
-                });
-            }
-            
-            // Challenge based
-            if (answers.challenge === 'acquisition') {
-                symptoms.push({
-                    title: 'Weak Lead Generation',
-                    description: 'Your current channels aren\'t delivering qualified prospects consistently.'
-                });
-            }
-            
-            // Time based
-            if (answers['time-spent'] === 'sales' && answers.growth !== 'fast') {
-                symptoms.push({
-                    title: 'Sales Efficiency Problem',
-                    description: 'You\'re spending time selling but not seeing results. Process needs optimization.'
-                });
-            }
-            
-            // General symptoms
-            const generalSymptoms = [
-                {
-                    title: 'No Scalable Channel',
-                    description: 'You haven\'t found a repeatable way to acquire customers profitably.'
-                },
-                {
-                    title: 'Poor Conversion Rates',
-                    description: 'Leads aren\'t converting, indicating messaging or qualification issues.'
-                },
-                {
-                    title: 'High CAC',
-                    description: 'Customer acquisition costs are too high relative to lifetime value.'
-                }
-            ];
-            
-            while (symptoms.length < 3) {
-                symptoms.push(generalSymptoms[symptoms.length]);
-            }
-            
-            return symptoms.slice(0, 3);
-        }
-        
-        function generateOperationsSymptoms() {
-            const symptoms = [];
-            
-            if (answers.challenge === 'operations') {
-                symptoms.push({
-                    title: 'Task Overwhelm',
-                    description: 'Too many things need your attention. You need systems and delegation.'
-                });
-            }
-            
-            if (answers['time-spent'] === 'admin') {
-                symptoms.push({
-                    title: 'Admin Time Sink',
-                    description: 'Operations are stealing time from growth activities.'
-                });
-            }
-            
-            if (answers.time === 'veteran' && (answers.mrr === '0' || answers.mrr === '1-10k')) {
-                symptoms.push({
-                    title: 'Execution Problems',
-                    description: 'After 2+ years with low revenue, systems and focus are the issue.'
-                });
-            }
-            
-            const generalSymptoms = [
-                {
-                    title: 'No Standard Processes',
-                    description: 'Everything is ad-hoc, causing inconsistency and inefficiency.'
-                },
-                {
-                    title: 'Tool Chaos',
-                    description: 'Using too many tools or the wrong ones for your stage.'
-                },
-                {
-                    title: 'Lack of Automation',
-                    description: 'Manual tasks that could be automated are eating your time.'
-                }
-            ];
-            
-            while (symptoms.length < 3) {
-                symptoms.push(generalSymptoms[symptoms.length]);
-            }
-            
-            return symptoms.slice(0, 3);
-        }
-        
-        function generatePMFSymptoms() {
-            const symptoms = [];
-            
-            if (answers.growth === 'declining') {
-                symptoms.push({
-                    title: 'Declining Revenue',
-                    description: 'Loss of revenue indicates fundamental product-market misalignment.'
-                });
-            }
-            
-            if (answers.churn === 'high') {
-                symptoms.push({
-                    title: 'Customers Don\'t Stick',
-                    description: 'High churn means your product isn\'t solving a critical problem.'
-                });
-            }
-            
-            if (answers.time === 'veteran' && answers.mrr === '0') {
-                symptoms.push({
-                    title: 'No Revenue After 2+ Years',
-                    description: 'This timeline suggests fundamental market or product issues.'
-                });
-            }
-            
-            const generalSymptoms = [
-                {
-                    title: 'Weak Value Proposition',
-                    description: 'Customers don\'t clearly understand or need what you offer.'
-                },
-                {
-                    title: 'Wrong Target Market',
-                    description: 'You\'re selling to people who don\'t desperately need your solution.'
-                },
-                {
-                    title: 'Feature Bloat',
-                    description: 'Building features hoping something sticks instead of solving one problem well.'
-                }
-            ];
-            
-            while (symptoms.length < 3) {
-                symptoms.push(generalSymptoms[symptoms.length]);
-            }
-            
-            return symptoms.slice(0, 3);
-        }
-        
-        // Implementation plans (simplified versions for each bottleneck)
-        function generatePricingPlan() {
-            return [
-                {
-                    day: 'Days 1-3: Price Discovery',
-                    time: '6 hours total',
-                    tasks: [
-                        'Call 5 customers: "What value do you get from our product?"',
-                        'Research 3 competitors\' pricing pages',
-                        'Calculate your true cost per customer',
-                        'Document which features customers actually use'
-                    ]
-                },
-                {
-                    day: 'Days 4-7: Test & Implement',
-                    time: '8 hours total',
-                    tasks: [
-                        'Raise prices 20% for NEW customers only',
-                        'Create one premium tier with 2x pricing',
-                        'Design a services package ($2-5K one-time)',
-                        'Update website with new pricing'
-                    ]
-                },
-                {
-                    day: 'Days 8-14: Expand Revenue',
-                    time: '10 hours total',
-                    tasks: [
-                        'Launch annual plans (2 months free)',
-                        'Email top 20% of customers about premium tier',
-                        'Track acceptance rates daily',
-                        'Plan next price increase if >80% accept'
-                    ]
-                }
-            ];
-        }
-        
-        function generateRetentionPlan() {
-            return [
-                {
-                    day: 'Days 1-3: Diagnose Churn',
-                    time: '8 hours total',
-                    tasks: [
-                        'Export list of churned customers from last 60 days',
-                        'Email 10 churned users for 15-min calls',
-                        'Analyze usage data before churn',
-                        'Identify top 3 churn triggers'
-                    ]
-                },
-                {
-                    day: 'Days 4-7: Fix Onboarding',
-                    time: '10 hours total',
-                    tasks: [
-                        'Map your current onboarding flow',
-                        'Identify where users get stuck',
-                        'Create 3 onboarding emails for new users',
-                        'Add progress bar to setup process'
-                    ]
-                },
-                {
-                    day: 'Days 8-14: Engagement Systems',
-                    time: '8 hours total',
-                    tasks: [
-                        'Set up weekly check-in emails',
-                        'Create re-engagement campaign for dormant users',
-                        'Launch "office hours" for struggling customers',
-                        'Implement usage-based upgrade prompts'
-                    ]
-                }
-            ];
-        }
-        
-        function generateAcquisitionPlan() {
-            return [
-                {
-                    day: 'Days 1-3: Channel Analysis',
-                    time: '6 hours total',
-                    tasks: [
-                        'List all current traffic sources',
-                        'Calculate CAC for each channel',
-                        'Identify your #1 performing channel',
-                        'Document your sales process end-to-end'
-                    ]
-                },
-                {
-                    day: 'Days 4-7: Optimize Best Channel',
-                    time: '10 hours total',
-                    tasks: [
-                        'Double down on best channel',
-                        'A/B test 3 new headlines/messages',
-                        'Improve landing page conversion',
-                        'Set up proper conversion tracking'
-                    ]
-                },
-                {
-                    day: 'Days 8-14: Scale What Works',
-                    time: '12 hours total',
-                    tasks: [
-                        'Increase budget on winning channel by 50%',
-                        'Create 5 pieces of content for that channel',
-                        'Test one new similar channel',
-                        'Document playbook for repeatable execution'
-                    ]
-                }
-            ];
-        }
-        
-        function generateOperationsPlan() {
-            return [
-                {
-                    day: 'Days 1-3: Time Audit',
-                    time: '4 hours total',
-                    tasks: [
-                        'Track every task for 3 days',
-                        'Identify top 5 time wasters',
-                        'List all tools you\'re currently using',
-                        'Find 3 tasks you can eliminate immediately'
-                    ]
-                },
-                {
-                    day: 'Days 4-7: Automate Basics',
-                    time: '8 hours total',
-                    tasks: [
-                        'Set up email templates for common responses',
-                        'Automate invoice and payment collection',
-                        'Create SOPs for repetitive tasks',
-                        'Implement basic Zapier workflows'
-                    ]
-                },
-                {
-                    day: 'Days 8-14: Systems & Delegation',
-                    time: '10 hours total',
-                    tasks: [
-                        'Hire VA for 5 hours/week ($15-25/hour)',
-                        'Document your core processes',
-                        'Set up project management system',
-                        'Create weekly dashboard for key metrics'
-                    ]
-                }
-            ];
-        }
-        
-        function generatePMFPlan() {
-            return [
-                {
-                    day: 'Days 1-3: Customer Discovery',
-                    time: '10 hours total',
-                    tasks: [
-                        'Interview 10 customers about their #1 problem',
-                        'Ask: "How disappointed would you be if we disappeared?"',
-                        'Document exact words customers use',
-                        'Identify patterns in feedback'
-                    ]
-                },
-                {
-                    day: 'Days 4-7: Pivot or Persevere',
-                    time: '8 hours total',
-                    tasks: [
-                        'Decide: narrow focus or find new market',
-                        'Rewrite value proposition in customer\'s words',
-                        'Remove 3 features nobody uses',
-                        'Test new positioning with 5 prospects'
-                    ]
-                },
-                {
-                    day: 'Days 8-14: Validate Changes',
-                    time: '12 hours total',
-                    tasks: [
-                        'Run targeted ads to new positioning',
-                        'Measure engagement with new message',
-                        'Get 10 new customers with new approach',
-                        'Track if retention improves'
-                    ]
-                }
-            ];
-        }
-        
-        // Download function - creates branded PDF HTML report
-        function downloadPlan() {
-            if (!currentDiagnosis) return;
-            
-            // Create the HTML content for the PDF
-            const pdfHTML = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StartupStage Diagnostic Report - Growth Analysis</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        @page {
-            size: A4;
-            margin: 0;
-        }
-        
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            color: #050310;
-            background: white;
-            line-height: 1.6;
-            print-color-adjust: exact;
-            -webkit-print-color-adjust: exact;
-        }
-        
-        .page {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 20mm 20mm 25mm 20mm;
-            margin: 0 auto;
-            background: white;
-            position: relative;
-        }
-        
-        .page::before {
-            content: '';
-            position: absolute;
-            top: -10%;
-            right: -5%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(143, 90, 243, 0.03) 0%, transparent 70%);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .content {
-            position: relative;
-            z-index: 1;
-        }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 3rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .company-name {
-            font-size: 2rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            letter-spacing: -0.5px;
-        }
-        
-        .tagline {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #999;
-            font-weight: 600;
-            margin-top: 0.25rem;
-        }
-        
-        .metadata {
-            text-align: right;
-            font-size: 0.85rem;
-            color: #999;
-        }
-        
-        .diagnosis-card {
-            background: #fafafa;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-            padding: 2.5rem;
-            margin: 3rem 0;
-            position: relative;
-        }
-        
-        .diagnosis-badge {
-            display: inline-block;
-            background: #050310;
-            color: white;
-            padding: 8px 20px;
-            border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 1.5rem;
-        }
-        
-        .diagnosis-title {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: #050310;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-        
-        .diagnosis-description {
-            font-size: 1.1rem;
-            color: #444;
-            line-height: 1.7;
-        }
-        
-        .impact-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin: 3rem 0;
-        }
-        
-        .metric-card {
-            text-align: center;
-            padding: 1.5rem;
-            background: white;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
-        }
-        
-        .metric-value {
-            font-size: 2rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #8F5AF3, #FFA8CB);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-        }
-        
-        .metric-label {
-            font-size: 0.85rem;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-weight: 600;
-        }
-        
-        .metric-context {
-            font-size: 0.75rem;
-            color: #999;
-            margin-top: 0.5rem;
-        }
-        
-        .findings-section {
-            margin: 3rem 0;
-        }
-        
-        .section-header {
-            font-size: 1.6rem;
-            font-weight: 900;
-            margin-bottom: 2rem;
-            color: #050310;
-        }
-        
-        .finding-card {
-            background: #fafafa;
-            border-left: 4px solid #8F5AF3;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-radius: 0 8px 8px 0;
-            position: relative;
-            padding-left: 3rem;
-        }
-        
-        .finding-number {
-            position: absolute;
-            left: 1rem;
-            top: 1.5rem;
-            width: 28px;
-            height: 28px;
-            background: #8F5AF3;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-        
-        .finding-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            color: #050310;
-        }
-        
-        .finding-description {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 0.75rem;
-        }
-        
-        .finding-stat {
-            display: inline-block;
-            background: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #8F5AF3;
-            border: 1px solid #e5e5e5;
-            margin-right: 0.5rem;
-        }
-        
-        .implementation-box {
-            background: #f8f8f8;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 3rem 0;
-        }
-        
-        .implementation-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #050310;
-        }
-        
-        .implementation-timeline {
-            margin-bottom: 1.5rem;
-            line-height: 1.8;
-        }
-        
-        .implementation-meta {
-            font-size: 0.9rem;
-            color: #666;
-            padding-top: 1rem;
-            border-top: 1px solid #e5e5e5;
-        }
-        
-        .cta-section {
-            margin-top: 3rem;
-            padding: 2.5rem;
-            background: #fafafa;
-            border-radius: 12px;
-            text-align: center;
-        }
-        
-        .cta-title {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: #050310;
-            font-weight: 700;
-        }
-        
-        .cta-description {
-            color: #666;
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
-        
-        .cta-meta {
-            font-size: 0.85rem;
-            color: #999;
-            margin-top: 1.5rem;
-        }
-        
-        .footer {
-            position: absolute;
-            bottom: 15mm;
-            left: 20mm;
-            right: 20mm;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            color: #999;
-        }
-        
-        .footer-brand {
-            font-weight: 700;
-            color: #8F5AF3;
-        }
-        
-        @media screen {
-            body {
-                background: #f5f5f5;
-                padding: 20px;
-            }
-            
-            .page {
-                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            }
-        }
-        
-        @media print {
-            body {
-                background: white;
-            }
-            
-            .page {
-                margin: 0;
-                box-shadow: none;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="page">
-        <div class="content">
-            <!-- Header -->
-            <div class="header">
-                <div>
-                    <div class="company-name">StartupStage</div>
-                    <div class="tagline">The Anti-Accelerator</div>
-                </div>
-                <div class="metadata">
-                    <div><strong>Growth Diagnostic Report</strong></div>
-                    <div>${new Date().toLocaleDateString()}</div>
-                </div>
-            </div>
-            
-            <!-- Executive Summary -->
-            <div class="diagnosis-card">
-                <span class="diagnosis-badge">${currentDiagnosis.badge}</span>
-                <h1 class="diagnosis-title">${currentDiagnosis.title}</h1>
-                <p class="diagnosis-description">
-                    ${currentDiagnosis.description}
-                </p>
-            </div>
-            
-            <!-- Impact Metrics -->
-            <div class="impact-grid">
-                <div class="metric-card">
-                    <div class="metric-value">${currentDiagnosis.impact}</div>
-                    <div class="metric-label">Monthly Revenue Impact</div>
-                    <div class="metric-context">Based on your current MRR</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">14 Days</div>
-                    <div class="metric-label">Implementation Time</div>
-                    <div class="metric-context">25-30 hours total</div>
-                </div>
-                <div class="metric-card">
-                    <div class="metric-value">90 Days</div>
-                    <div class="metric-label">To See Results</div>
-                    <div class="metric-context">Based on similar companies</div>
-                </div>
-            </div>
-            
-            <!-- Key Findings -->
-            <div class="findings-section">
-                <h2 class="section-header">Critical Issues Discovered</h2>
-                ${currentDiagnosis.symptoms.map((symptom, index) => `
-                    <div class="finding-card">
-                        <div class="finding-number">${index + 1}</div>
-                        <h3 class="finding-title">${symptom.title}</h3>
-                        <p class="finding-description">
-                            ${symptom.description}
-                        </p>
+                <!-- Impact Metrics -->
+                <div class="impact-section">
+                    <h2 class="section-title">POTENTIAL MONTHLY IMPACT:</h2>
+                    <div class="impact-grid">
+                        ${diagnosis.impacts.map(impact => `
+                            <div class="impact-card">
+                                <div class="impact-value">${impact.value}</div>
+                                <div class="impact-label">${impact.label}</div>
+                                <div class="impact-context">${impact.context}</div>
+                            </div>
+                        `).join('')}
                     </div>
-                `).join('')}
-            </div>
-            
-            <!-- Implementation Roadmap -->
-            <div class="implementation-box">
-                <h3 class="implementation-title">Your 14-Day Implementation Roadmap</h3>
-                <div class="implementation-timeline">
-                    ${currentDiagnosis.plan.map(phase => `
-                        <strong>${phase.day}:</strong> ${phase.time}<br>
+                </div>
+                
+                <!-- Key Issues -->
+                <div class="issues-section">
+                    <h2 class="section-title">KEY ISSUES IDENTIFIED:</h2>
+                    ${diagnosis.issues.map((issue, index) => `
+                        <div class="issue-card">
+                            <div class="issue-number">${index + 1}</div>
+                            <h3 class="issue-title">${issue.title}</h3>
+                            <p class="issue-description">${issue.description}</p>
+                        </div>
                     `).join('')}
                 </div>
-                <div class="implementation-meta">
-                    Total time investment: 25-30 hours over 14 days<br>
-                    Expected ROI: Significant improvement within 90 days
+                
+                <!-- Implementation Plan -->
+                <div class="implementation-section">
+                    <div class="implementation-header">
+                        <h2 class="implementation-title">14-DAY IMPLEMENTATION PLAN</h2>
+                        <p class="implementation-subtitle">Total Time Investment: 25-30 hours over 14 days (Average 2 hours per day)</p>
+                    </div>
+                    
+                    ${generateImplementationPlanHTML(bottleneckType)}
                 </div>
-            </div>
-            
-            <!-- CTA Section -->
-            <div class="cta-section">
-                <h3 class="cta-title">Need Help Implementing This Plan?</h3>
-                <p class="cta-description">
-                    StartupStage members get direct implementation support from founders who've solved these exact problems.<br>
-                    No equity required. Just $199/month.
-                </p>
-                <div style="margin: 1.5rem 0; padding: 1rem; background: white; border-radius: 8px; border: 2px solid #8F5AF3;">
-                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 0.5rem;">Schedule Your Implementation Call:</p>
-                    <p style="font-size: 1.1rem; color: #8F5AF3; font-weight: 700; word-break: break-all;">
-                        cal.com/startupstage/get-unstuck-1-on-1-founder-call
+                
+                <!-- CTA Section -->
+                <div class="cta-section">
+                    <h2 class="cta-title">NEED HELP IMPLEMENTING THIS PLAN?</h2>
+                    <p class="cta-description">
+                        StartupStage members get:
+                    </p>
+                    <div class="cta-features">
+                        <div class="cta-feature">
+                            <div class="cta-feature-text">Monthly 1-on-1 calls with experienced founders</div>
+                        </div>
+                        <div class="cta-feature">
+                            <div class="cta-feature-text">Access to 20+ fractional C-suite experts</div>
+                        </div>
+                        <div class="cta-feature">
+                            <div class="cta-feature-text">Weekly implementation workshops</div>
+                        </div>
+                        <div class="cta-feature">
+                            <div class="cta-feature-text">Private community of serious founders</div>
+                        </div>
+                        <div class="cta-feature">
+                            <div class="cta-feature-text">0% equity taken - forever</div>
+                        </div>
+                    </div>
+                    <div class="cta-pricing">
+                        Just $199/month
+                    </div>
+                    <div class="cta-link-box">
+                        <p class="cta-link-label">Join StartupStage:</p>
+                        <a href="https://startupstage.com" class="cta-link">
+                            startupstage.com
+                        </a>
+                    </div>
+                    <p class="cta-meta">
+                        30-day money-back guarantee • Cancel anytime • 0% equity forever
                     </p>
                 </div>
-                <p class="cta-meta">
-                    30-day money-back guarantee • Cancel anytime • 0% equity forever
-                </p>
-            </div>
-        </div>
-        
-        <!-- Minimal Footer -->
-        <div class="footer">
-            <div class="footer-brand">StartupStage</div>
-            <div>Page 1 of 1</div>
-            <div>© 2025 StartupStage | Proprietary & Confidential</div>
-        </div>
-    </div>
-</body>
-</html>
+                
+                <!-- Footer -->
+                <div class="footer">
+                    <p class="footer-text">
+                        © 2025 <span class="footer-brand">StartupStage</span> | The Anti-Accelerator | 0% Equity Forever
+                    </p>
+                </div>
             `;
+        }
+        
+        function generateImplementationPlanHTML(bottleneckType) {
+            // Full operations implementation plan
+            if (bottleneckType === 'operations') {
+                return `
+                    <!-- Days 1-3 -->
+                    <div class="phase-container">
+                        <div class="phase-header">
+                            <h3 class="phase-title">DAYS 1-3: TIME AND TASK AUDIT</h3>
+                            <p class="phase-time">Time: 4 hours total</p>
+                        </div>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-title">Track every task for 3 days</div>
+                                <div class="task-details">
+                                    USE: Simple spreadsheet or Toggl<br>
+                                    COLUMNS: Task, Time Spent, Category, Could be Automated/Delegated?<br>
+                                    CATEGORIES: Sales, Marketing, Product, Support, Admin<br>
+                                    BE HONEST: Include "checking email" and "thinking time"
+                                </div>
+                                <div class="task-tools">
+                                    <span class="tool-tag">Toggl</span>
+                                    <span class="tool-tag">Google Sheets</span>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-title">Identify top 5 time wasters</div>
+                                <div class="task-details">
+                                    USUAL SUSPECTS: Email (checking too frequently), Meetings without agendas, Context switching, Manual data entry, Repetitive customer support, Social media "research"<br>
+                                    CALCULATE: Hours per week on each
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-title">List all tools you're currently using</div>
+                                <div class="task-details">
+                                    DOCUMENT: Tool name, cost, purpose, usage frequency<br>
+                                    IDENTIFY: Overlapping tools doing same thing<br>
+                                    CALCULATE: Total monthly tool cost<br>
+                                    QUESTION: Which could you live without?
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-title">Find 3 tasks you can eliminate immediately</div>
+                                <div class="task-details">
+                                    ASK: What happens if I just... don't do this?<br>
+                                    80/20 RULE: 20% of tasks drive 80% of results<br>
+                                    EXAMPLES: Daily reports nobody reads, Meetings without clear outcomes, Perfectionist tweaks, Vanity metrics tracking
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Days 4-7 -->
+                    <div class="phase-container">
+                        <div class="phase-header">
+                            <h3 class="phase-title">DAYS 4-7: AUTOMATE THE BASICS</h3>
+                            <p class="phase-time">Time: 8 hours total</p>
+                        </div>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-title">Set up email templates for common responses</div>
+                                <div class="task-details">
+                                    CREATE TEMPLATES FOR: Pricing questions, Feature requests, Onboarding welcome, Payment failures, Cancellation attempts, Support tickets<br><br>
+                                    GMAIL: Settings → Advanced → Templates<br>
+                                    OUTLOOK: Quick Parts feature<br>
+                                    HELP SCOUT: Saved replies
+                                </div>
+                                <div class="task-tools">
+                                    <span class="tool-tag">Gmail</span>
+                                    <span class="tool-tag">Outlook</span>
+                                    <span class="tool-tag">Help Scout</span>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-title">Automate invoice and payment collection</div>
+                                <div class="task-details">
+                                    STRIPE: Set up automatic invoicing and payment retry<br>
+                                    RECURRING BILLING: Use subscription management tool<br>
+                                    DUNNING EMAILS: Automatic payment failure sequences<br>
+                                    LATE PAYMENT: Automatic reminders at 3, 7, 14 days
+                                </div>
+                                <div class="task-tools">
+                                    <span class="tool-tag">Stripe</span>
+                                    <span class="tool-tag">Chargebee</span>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-title">Create SOPs for repetitive tasks</div>
+                                <div class="task-details">
+                                    FORMAT: Step-by-step with screenshots<br>
+                                    TOOLS: Loom for video SOPs, Notion for written<br><br>
+                                    PRIORITIZE SOPS FOR: Customer onboarding, Content publishing, Invoice processing, Support ticket handling, Social media posting
+                                </div>
+                                <div class="task-tools">
+                                    <span class="tool-tag">Loom</span>
+                                    <span class="tool-tag">Notion</span>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-title">Implement basic Zapier workflows</div>
+                                <div class="task-details">
+                                    STARTER ZAPS (FREE TIER):<br>
+                                    1. Form submission → Slack notification → Google Sheet<br>
+                                    2. New customer → Welcome email → CRM entry<br>
+                                    3. Support ticket → Team notification → Tracking sheet<br>
+                                    4. Social mention → Slack alert → Response tracking<br>
+                                    5. Payment received → Thank you email → Accounting sheet<br><br>
+                                    TIME SAVED: Each Zap saves 5-15 min per trigger
+                                </div>
+                                <div class="task-tools">
+                                    <span class="tool-tag">Zapier</span>
+                                    <span class="tool-tag">Make</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Days 8-14 -->
+                    <div class="phase-container">
+                        <div class="phase-header">
+                            <h3 class="phase-title">DAYS 8-14: SYSTEMS AND DELEGATION</h3>
+                            <p class="phase-time">Time: 10 hours total</p>
+                        </div>
+                        <ul class="task-list">
+                            <li class="task-item">
+                                <div class="task-title">Hire VA for 5 hours/week ($15-25/hour)</div>
+                                <div class="task-details">
+                                    WHERE TO HIRE: Upwork (global talent), Belay (US-based, prescreened), Time Etc (UK/US experienced), OnlineJobs.ph (Philippines, great value)<br><br>
+                                    TASKS TO DELEGATE: Email inbox management, Calendar scheduling, Data entry and reporting, Social media posting, Research tasks, Customer support (level 1)<br><br>
+                                    ONBOARDING PROCESS:<br>
+                                    Day 1: Share SOPs and Loom videos<br>
+                                    Day 2: Shadow you doing tasks<br>
+                                    Day 3: Do tasks with supervision<br>
+                                    Day 4: Do tasks with review<br>
+                                    Day 5: Independent work<br><br>
+                                    MANAGEMENT TIPS: Daily check-in first week, Weekly check-in after that, Use time tracking tool, Create shared task list, Record Loom feedback
+                                </div>
+                                <div class="task-tools">
+                                    <span class="tool-tag">Upwork</span>
+                                    <span class="tool-tag">Belay</span>
+                                    <span class="tool-tag">OnlineJobs.ph</span>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-title">Document your core processes</div>
+                                <div class="task-details">
+                                    THE BIG 5 TO DOCUMENT:<br>
+                                    1. Sales process (lead → customer)<br>
+                                    2. Onboarding process (signup → active)<br>
+                                    3. Support process (ticket → resolution)<br>
+                                    4. Content process (idea → published)<br>
+                                    5. Product process (feature request → shipped)<br><br>
+                                    DOCUMENTATION TOOLS: Notion (free, flexible), Confluence (robust, integrated), Google Docs (simple, shareable), Loom (video walkthroughs)
+                                </div>
+                                <div class="task-tools">
+                                    <span class="tool-tag">Notion</span>
+                                    <span class="tool-tag">Confluence</span>
+                                    <span class="tool-tag">Loom</span>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-title">Set up project management system</div>
+                                <div class="task-details">
+                                    TOOL OPTIONS: Trello (visual, simple) - Free, Asana (comprehensive) - Free for 15 users, ClickUp (all-in-one) - Free tier available, Notion (flexible) - Free for personal<br><br>
+                                    BOARD STRUCTURE: Backlog (ideas), To Do (committed), In Progress (working on), Review (needs approval), Done (completed)<br><br>
+                                    WEEKLY PLANNING: Monday: Review last week, plan this week. Daily: Move cards, update status. Friday: Clean up board, celebrate wins
+                                </div>
+                                <div class="task-tools">
+                                    <span class="tool-tag">Trello</span>
+                                    <span class="tool-tag">Asana</span>
+                                    <span class="tool-tag">ClickUp</span>
+                                </div>
+                            </li>
+                            <li class="task-item">
+                                <div class="task-title">Create weekly dashboard for key metrics</div>
+                                <div class="task-details">
+                                    ONE-PAGE DASHBOARD INCLUDES: Revenue (MRR, growth rate), Customers (new, churned, total), Usage (DAU, key feature adoption), Pipeline (leads, trials, close rate), Operations (support tickets, response time)<br><br>
+                                    TOOLS: Google Sheets (free, flexible), Databox (pulls from all tools), Geckoboard (visual displays), Klipfolio (advanced analytics)<br><br>
+                                    UPDATE FREQUENCY: Revenue: Daily, Customers: Daily, Usage: Weekly, Pipeline: Weekly, Operations: Daily
+                                </div>
+                                <div class="task-tools">
+                                    <span class="tool-tag">Google Sheets</span>
+                                    <span class="tool-tag">Databox</span>
+                                    <span class="tool-tag">Geckoboard</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                `;
+            }
             
-            // Open in new window for printing
-            const printWindow = window.open('', '_blank');
-            printWindow.document.write(pdfHTML);
-            printWindow.document.close();
-            
-            // Auto-trigger print dialog after a short delay
-            setTimeout(() => {
-                printWindow.print();
-            }, 500);
+            // Add other implementation plans here
+            return '';
         }
     </script>
 </body>
