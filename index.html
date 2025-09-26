@@ -82,14 +82,28 @@
             width: 0%;
         }
         
+        .question-text {
+            color: #ffffff;
+            font-size: 1.4rem;
+            margin-bottom: 24px;
+            margin-top: 30px;
+            font-weight: 600;
+            background: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            text-align: left;
+            line-height: 1.4;
+            display: block;
+        }
+        
         .options-grid {
             display: grid;
             gap: 12px;
-            margin-bottom: 25px;
+            margin-bottom: 35px;
         }
         
         .option-card {
-            background: rgba(26, 26, 37, 0.5);
+            background: linear-gradient(180deg, rgba(26, 26, 37, 0.8) 0%, rgba(20, 20, 31, 0.6) 100%);
             border: 2px solid transparent;
             border-radius: 12px;
             padding: 16px;
@@ -99,6 +113,7 @@
             justify-content: space-between;
             align-items: center;
             color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .option-card:hover {
@@ -581,9 +596,13 @@
         
         h3 {
             color: #fff;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
             font-weight: 600;
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
         }
         
         .hidden {
@@ -608,7 +627,7 @@
             
             <form id="diagnosticForm">
                 <!-- Q1: MRR -->
-                <h3>What's your current monthly recurring revenue?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">What's your current monthly recurring revenue?</div>
                 <div class="options-grid" data-question="mrr">
                     <div class="option-card" data-value="0">
                         $0 (Pre-revenue)
@@ -633,7 +652,7 @@
                 </div>
                 
                 <!-- Q2: Primary Challenge -->
-                <h3>What's your biggest challenge right now?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">What's your biggest challenge right now?</div>
                 <div class="options-grid" data-question="challenge">
                     <div class="option-card" data-value="acquisition">
                         Getting new customers
@@ -658,7 +677,7 @@
                 </div>
                 
                 <!-- Q3: Growth Trend -->
-                <h3>How has your revenue changed over the last 3 months?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">How has your revenue changed over the last 3 months?</div>
                 <div class="options-grid" data-question="growth">
                     <div class="option-card" data-value="declining">
                         Declining
@@ -679,7 +698,7 @@
                 </div>
                 
                 <!-- Q4: Churn -->
-                <h3>What's your monthly customer churn rate?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">What's your monthly customer churn rate?</div>
                 <div class="options-grid" data-question="churn">
                     <div class="option-card" data-value="unknown">
                         Don't track it
@@ -700,7 +719,7 @@
                 </div>
                 
                 <!-- Q5: Time in Business -->
-                <h3>How long have you been working on this business?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">How long have you been working on this business?</div>
                 <div class="options-grid" data-question="time">
                     <div class="option-card" data-value="new">
                         Less than 6 months
@@ -721,7 +740,7 @@
                 </div>
                 
                 <!-- Q6: Sales Process -->
-                <h3>Who handles sales in your company?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">Who handles sales in your company?</div>
                 <div class="options-grid" data-question="sales">
                     <div class="option-card" data-value="founder">
                         Just me (founder)
@@ -742,7 +761,7 @@
                 </div>
                 
                 <!-- Q7: Time Allocation -->
-                <h3>Where do you spend most of your time?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">Where do you spend most of your time?</div>
                 <div class="options-grid" data-question="time-spent">
                     <div class="option-card" data-value="product">
                         Building product
@@ -763,7 +782,7 @@
                 </div>
                 
                 <!-- Q8: Business Model -->
-                <h3>What's your business model?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">What's your business model?</div>
                 <div class="options-grid" data-question="model">
                     <div class="option-card" data-value="saas">
                         SaaS (subscription)
@@ -784,7 +803,7 @@
                 </div>
                 
                 <!-- Q9: Last Price Increase -->
-                <h3>When did you last raise prices?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">When did you last raise prices?</div>
                 <div class="options-grid" data-question="price-change">
                     <div class="option-card" data-value="never">
                         Never
@@ -805,7 +824,7 @@
                 </div>
                 
                 <!-- Q10: Services/Upsells -->
-                <h3>Do you offer additional services or upsells?</h3>
+                <div style="background: linear-gradient(90deg, #8F5AF3 0%, #FFA8CB 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 1.4rem; font-weight: 700; margin-bottom: 24px; margin-top: 35px;">Do you offer additional services or upsells?</div>
                 <div class="options-grid" data-question="upsells">
                     <div class="option-card" data-value="none">
                         No additional offerings
@@ -844,6 +863,8 @@
         </div>
     </div>
     
+    <!-- Add jsPDF library for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         // Store answers and diagnosis data globally
         let answers = {};
@@ -1060,6 +1081,18 @@
                     </div>
                     
                     ${generateImplementationPlanHTML(bottleneckType)}
+                </div>
+                
+                <!-- Download Button -->
+                <div style="text-align: center; margin: 40px 0;">
+                    <button onclick="downloadPDF()" class="download-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle; margin-right: 8px;">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        DOWNLOAD COMPLETE IMPLEMENTATION GUIDE (PDF)
+                    </button>
                 </div>
                 
                 <!-- CTA Section -->
@@ -1300,6 +1333,266 @@
             
             // Add other implementation plans here
             return '';
+        }
+        
+        // PDF Download Function
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Colors
+            const purple = [143, 90, 243];
+            const darkText = [50, 50, 50];
+            const lightText = [100, 100, 100];
+            
+            // Page setup
+            const pageWidth = 210;
+            const margin = 20;
+            let yPos = 20;
+            
+            // Helper function to check page break
+            function checkPageBreak(neededSpace) {
+                if (yPos + neededSpace > 280) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+            }
+            
+            // Title Page
+            doc.setFillColor(...purple);
+            doc.rect(0, 0, pageWidth, 5, 'F');
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(28);
+            doc.setTextColor(...purple);
+            doc.text('StartupStage', pageWidth/2, 30, { align: 'center' });
+            
+            doc.setFontSize(14);
+            doc.setTextColor(...darkText);
+            doc.text('Growth Diagnostic Report', pageWidth/2, 40, { align: 'center' });
+            
+            doc.setFontSize(11);
+            doc.setTextColor(...lightText);
+            doc.text('14-Day Implementation Plan', pageWidth/2, 48, { align: 'center' });
+            
+            yPos = 65;
+            
+            // Diagnosis Section
+            doc.setFontSize(18);
+            doc.setTextColor(...purple);
+            doc.setFont('helvetica', 'bold');
+            doc.text('YOUR DIAGNOSIS: OPERATIONAL CHAOS', margin, yPos);
+            yPos += 10;
+            
+            doc.setFontSize(11);
+            doc.setTextColor(...darkText);
+            doc.setFont('helvetica', 'normal');
+            const description = "You're drowning in tasks instead of focusing on growth. Systems and automation can free up 40% of your time.";
+            const descLines = doc.splitTextToSize(description, pageWidth - (margin * 2));
+            doc.text(descLines, margin, yPos);
+            yPos += descLines.length * 5 + 10;
+            
+            // Impact Metrics
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('POTENTIAL MONTHLY IMPACT:', margin, yPos);
+            yPos += 8;
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            doc.text('• Revenue Impact: $5K-$20K', margin + 5, yPos);
+            yPos += 6;
+            doc.text('• Time Recovered: 16 hrs/week', margin + 5, yPos);
+            yPos += 6;
+            doc.text('• Efficiency Gain: 40%', margin + 5, yPos);
+            yPos += 12;
+            
+            // Key Issues
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('KEY ISSUES IDENTIFIED:', margin, yPos);
+            yPos += 8;
+            
+            const issues = [
+                'Task Overwhelm - Too many things need your attention',
+                'Admin Time Sink - Operations stealing growth time',
+                'Lack of Automation - Manual tasks eating your time'
+            ];
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(11);
+            issues.forEach((issue, index) => {
+                doc.text(`${index + 1}. ${issue}`, margin + 5, yPos);
+                yPos += 6;
+            });
+            
+            // New page for implementation plan
+            doc.addPage();
+            yPos = 20;
+            
+            // Implementation Plan Header
+            doc.setFillColor(...purple);
+            doc.rect(margin, yPos, pageWidth - (margin * 2), 12, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('14-DAY IMPLEMENTATION PLAN', margin + 5, yPos + 8);
+            yPos += 20;
+            
+            doc.setTextColor(...darkText);
+            doc.setFontSize(11);
+            doc.setFont('helvetica', 'normal');
+            doc.text('Total Time: 25-30 hours over 14 days', margin, yPos);
+            yPos += 10;
+            
+            // Days 1-3
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.setTextColor(...purple);
+            doc.text('DAYS 1-3: TIME AND TASK AUDIT (4 hours)', margin, yPos);
+            yPos += 7;
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(...darkText);
+            
+            const day1Tasks = [
+                '□ Track every task for 3 days (use Toggl or spreadsheet)',
+                '□ Identify top 5 time wasters',
+                '□ List all tools you\'re currently using',
+                '□ Find 3 tasks you can eliminate immediately'
+            ];
+            
+            day1Tasks.forEach(task => {
+                checkPageBreak(8);
+                doc.text(task, margin + 3, yPos);
+                yPos += 6;
+            });
+            yPos += 5;
+            
+            // Days 4-7
+            checkPageBreak(30);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.setTextColor(...purple);
+            doc.text('DAYS 4-7: AUTOMATE THE BASICS (8 hours)', margin, yPos);
+            yPos += 7;
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(...darkText);
+            
+            const day4Tasks = [
+                '□ Set up email templates for common responses',
+                '□ Automate invoice and payment collection (Stripe)',
+                '□ Create SOPs for repetitive tasks (use Loom)',
+                '□ Implement basic Zapier workflows (5 starter zaps)'
+            ];
+            
+            day4Tasks.forEach(task => {
+                checkPageBreak(8);
+                doc.text(task, margin + 3, yPos);
+                yPos += 6;
+            });
+            yPos += 5;
+            
+            // Days 8-14
+            checkPageBreak(30);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(12);
+            doc.setTextColor(...purple);
+            doc.text('DAYS 8-14: SYSTEMS & DELEGATION (10 hours)', margin, yPos);
+            yPos += 7;
+            
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(...darkText);
+            
+            const day8Tasks = [
+                '□ Hire VA for 5 hours/week ($15-25/hour)',
+                '□ Document your core processes',
+                '□ Set up project management system (Trello/Asana)',
+                '□ Create weekly dashboard for key metrics'
+            ];
+            
+            day8Tasks.forEach(task => {
+                checkPageBreak(8);
+                doc.text(task, margin + 3, yPos);
+                yPos += 6;
+            });
+            
+            // Resources section
+            doc.addPage();
+            yPos = 20;
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.setTextColor(...purple);
+            doc.text('RECOMMENDED TOOLS & RESOURCES', margin, yPos);
+            yPos += 10;
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.setTextColor(...darkText);
+            doc.text('Time Tracking:', margin, yPos);
+            yPos += 5;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text('• Toggl (free) - Simple time tracking', margin + 3, yPos);
+            yPos += 5;
+            doc.text('• RescueTime - Automatic tracking', margin + 3, yPos);
+            yPos += 8;
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text('Automation:', margin, yPos);
+            yPos += 5;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text('• Zapier (free tier) - Connect your tools', margin + 3, yPos);
+            yPos += 5;
+            doc.text('• Make/Integromat - Complex workflows', margin + 3, yPos);
+            yPos += 8;
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text('Virtual Assistants:', margin, yPos);
+            yPos += 5;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text('• Upwork - Global talent pool', margin + 3, yPos);
+            yPos += 5;
+            doc.text('• Belay - US-based, pre-screened', margin + 3, yPos);
+            yPos += 5;
+            doc.text('• OnlineJobs.ph - Philippines specialists', margin + 3, yPos);
+            yPos += 8;
+            
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(11);
+            doc.text('Project Management:', margin, yPos);
+            yPos += 5;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text('• Trello (free) - Visual boards', margin + 3, yPos);
+            yPos += 5;
+            doc.text('• Asana (free for 15 users)', margin + 3, yPos);
+            yPos += 5;
+            doc.text('• Notion (free) - All-in-one workspace', margin + 3, yPos);
+            
+            // Footer
+            yPos = 270;
+            doc.setFillColor(...purple);
+            doc.rect(0, yPos, pageWidth, 30, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('Need help implementing? Join StartupStage', pageWidth/2, yPos + 10, { align: 'center' });
+            doc.setFont('helvetica', 'normal');
+            doc.text('$199/month • 0% equity • Cancel anytime', pageWidth/2, yPos + 16, { align: 'center' });
+            doc.text('startupstage.com', pageWidth/2, yPos + 22, { align: 'center' });
+            
+            // Save the PDF
+            doc.save('startupstage-implementation-guide.pdf');
         }
     </script>
 </body>
